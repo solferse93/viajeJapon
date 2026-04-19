@@ -23,6 +23,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Archivo de Configuración Oculto (GitIgnore) -->
+    <script src="js/config.js"></script>
+
     <!-- Datos -->
     <script src="data.js"></script>
 
@@ -257,27 +263,35 @@
             <!-- ==================== TAB: RESUMEN (DASHBOARD) ==================== -->
             <section id="resumen" class="tab-content active">
                 <div class="mb-8">
-                    <h2 class="text-4xl md:text-5xl font-serif font-bold text-japan-text tracking-tight">Konnichiwa! (こんにちは) <span class="inline-block animate-bounce text-3xl md:text-4xl">🌸</span></h2>
-                    <p class="text-xl text-gray-600 leading-relaxed mt-4">Centro de mando para la expedición a Japón durante la temporada del <b>Momiji</b>.</p>
+                    <h2 class="text-4xl md:text-5xl font-serif font-bold text-japan-text tracking-tight">Konnichiwa!
+                        (こんにちは) <span class="inline-block animate-bounce text-3xl md:text-4xl">🌸</span></h2>
+                    <p class="text-xl text-gray-600 leading-relaxed mt-4">Centro de mando para la expedición a Japón
+                        durante la temporada del <b>Momiji</b>.</p>
                 </div>
 
                 <!-- Fila Superior (Widgets rápidos) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <!-- Tarjeta 1: Fechas y Progreso -->
-                    <div class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent flex flex-col justify-center relative overflow-hidden">
+                    <div
+                        class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent flex flex-col justify-center relative overflow-hidden">
                         <div class="absolute right-0 top-0 opacity-5 text-8xl -mr-4 -mt-4">🗻</div>
-                        <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400 flex items-center mb-2"><span class="text-xl mr-2">🗓️</span> Expedición Sagrada</h3>
+                        <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400 flex items-center mb-2">
+                            <span class="text-xl mr-2">🗓️</span> Expedición Sagrada</h3>
                         <p class="text-3xl font-bold text-gray-800">30 Oct - 21 Nov</p>
                         <div class="mt-4 flex items-center">
-                            <span class="bg-red-50 text-japan-accent text-sm font-bold px-3 py-1 rounded-full">21 Días Total</span>
-                            <span class="ml-3 text-sm text-gray-500 font-medium border-l border-gray-200 pl-3">4 Adultos</span>
+                            <span class="bg-red-50 text-japan-accent text-sm font-bold px-3 py-1 rounded-full">21 Días
+                                Total</span>
+                            <span class="ml-3 text-sm text-gray-500 font-medium border-l border-gray-200 pl-3">4
+                                Adultos</span>
                         </div>
                     </div>
 
                     <!-- Tarjeta 2: Distribución de Pernoctaciones -->
                     <div class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-matcha">
-                        <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400 flex items-center mb-4"><span class="text-xl mr-2">🏨</span> Bases de Alojamiento</h3>
-                        <div id="nights-distribution" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-center">
+                        <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400 flex items-center mb-4">
+                            <span class="text-xl mr-2">🏨</span> Bases de Alojamiento</h3>
+                        <div id="nights-distribution"
+                            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-center">
                             <!-- Injected by JS -->
                         </div>
                     </div>
@@ -286,11 +300,15 @@
                 <!-- Fila Central (Mapa y Logística) -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Columna Ancha: Mapa General -->
-                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-premium p-6 border border-gray-100 flex flex-col">
-                        <h3 class="text-xl font-bold font-serif mb-4 flex items-center"><span class="text-2xl mr-2">🗺️</span> Ruta Estratégica Nacional</h3>
-                        <div id="summary-map" class="w-full h-80 rounded-xl border border-gray-200 z-0 flex-grow relative bg-gray-100 shadow-inner">
+                    <div
+                        class="lg:col-span-2 bg-white rounded-2xl shadow-premium p-6 border border-gray-100 flex flex-col">
+                        <h3 class="text-xl font-bold font-serif mb-4 flex items-center"><span
+                                class="text-2xl mr-2">🗺️</span> Ruta Estratégica Nacional</h3>
+                        <div id="summary-map"
+                            class="w-full h-80 rounded-xl border border-gray-200 z-0 flex-grow relative bg-gray-100 shadow-inner">
                             <!-- Placeholder visual mientra carga Leaflet -->
-                            <div class="absolute inset-0 flex items-center justify-center text-gray-400 font-bold" id="map-loader">
+                            <div class="absolute inset-0 flex items-center justify-center text-gray-400 font-bold"
+                                id="map-loader">
                                 Cargando cartografía...
                             </div>
                         </div>
@@ -298,19 +316,26 @@
 
                     <!-- Columna Estrecha: Avisos Críticos -->
                     <div class="lg:col-span-1 bg-white rounded-2xl shadow-premium p-6 border border-gray-100">
-                        <h3 class="text-xl font-bold font-serif mb-4 flex items-center text-red-700"><span class="text-2xl mr-2">⚠️</span> Avisos Críticos</h3>
+                        <h3 class="text-xl font-bold font-serif mb-4 flex items-center text-red-700"><span
+                                class="text-2xl mr-2">⚠️</span> Avisos Críticos</h3>
                         <ul class="space-y-4 text-left">
                             <li class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl">
-                                <h4 class="font-bold text-gray-900 flex items-center"><span class="mr-2">📱</span> Visit Japan Web</h4>
-                                <p class="text-sm text-gray-700 mt-1 font-medium">Llevad los <b>códigos QR</b> en capturas de pantalla por si falla el internet al aterrizar.</p>
+                                <h4 class="font-bold text-gray-900 flex items-center"><span class="mr-2">📱</span> Visit
+                                    Japan Web</h4>
+                                <p class="text-sm text-gray-700 mt-1 font-medium">Llevad los <b>códigos QR</b> en
+                                    capturas de pantalla por si falla el internet al aterrizar.</p>
                             </li>
                             <li class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-xl">
-                                <h4 class="font-bold text-gray-900 flex items-center"><span class="mr-2">🧳</span> Takkyubin Obligatorio</h4>
-                                <p class="text-sm text-gray-700 mt-1 font-medium">Imposible subir maletas grandes al Shinkansen sin reserva. <b>Enviad maletas extra desde Tokio a Osaka</b>.</p>
+                                <h4 class="font-bold text-gray-900 flex items-center"><span class="mr-2">🧳</span>
+                                    Takkyubin Obligatorio</h4>
+                                <p class="text-sm text-gray-700 mt-1 font-medium">Imposible subir maletas grandes al
+                                    Shinkansen sin reserva. <b>Enviad maletas extra desde Tokio a Osaka</b>.</p>
                             </li>
                             <li class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
-                                <h4 class="font-bold text-gray-900 flex items-center"><span class="mr-2">📡</span> eSIM Individual</h4>
-                                <p class="text-sm text-gray-700 mt-1 font-medium">Cada viajero <b>debe llevar su propia conexión</b> (Ubigi/Holafly). No dependáis solo de uno.</p>
+                                <h4 class="font-bold text-gray-900 flex items-center"><span class="mr-2">📡</span> eSIM
+                                    Individual</h4>
+                                <p class="text-sm text-gray-700 mt-1 font-medium">Cada viajero <b>debe llevar su propia
+                                        conexión</b> (Ubigi/Holafly). No dependáis solo de uno.</p>
                             </li>
                         </ul>
                     </div>
@@ -351,10 +376,12 @@
 
                         <!-- Details will be injected here by JS -->
                         <div id="detail-content" class="hidden mt-10 lg:mt-0 flex flex-col">
-                            
+
                             <!-- Mapa Leaflet (Visual on mobile / Desktop top) -->
-                            <div id="map-container" class="w-full h-56 md:h-64 bg-gray-100 border border-gray-200 rounded-2xl mb-8 relative z-0 overflow-hidden shadow-sm lg:order-first"></div>
-                            
+                            <div id="map-container"
+                                class="w-full h-56 md:h-64 bg-gray-100 border border-gray-200 rounded-2xl mb-8 relative z-0 overflow-hidden shadow-sm lg:order-first">
+                            </div>
+
                             <div class="lg:order-last w-full">
                                 <div class="flex justify-between items-start mb-8">
                                     <div>
@@ -366,31 +393,31 @@
                                     <div class="text-5xl ml-4 drop-shadow-sm" id="detail-icon">🏙️</div>
                                 </div>
 
-                            <div class="bg-gray-50/80 rounded-2xl p-5 mb-8 text-gray-700 leading-relaxed border-l-4 border-japan-matcha text-lg"
-                                id="detail-description">
-                                Descripción general del ritmo del día.
-                            </div>
+                                <div class="bg-gray-50/80 rounded-2xl p-5 mb-8 text-gray-700 leading-relaxed border-l-4 border-japan-matcha text-lg"
+                                    id="detail-description">
+                                    Descripción general del ritmo del día.
+                                </div>
 
-                            <h4 class="text-xl font-bold mb-6 font-serif flex items-center"><span
-                                    class="text-2xl mr-2">📍</span> Ruta Sugerida</h4>
-                            <ul class="space-y-8 relative before:absolute before:inset-0 before:ml-[1.1rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-transparent"
-                                id="detail-route">
-                                <!-- JS Injected Timeline items -->
-                            </ul>
+                                <h4 class="text-xl font-bold mb-6 font-serif flex items-center"><span
+                                        class="text-2xl mr-2">📍</span> Ruta Sugerida</h4>
+                                <ul class="space-y-8 relative before:absolute before:inset-0 before:ml-[1.1rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-transparent"
+                                    id="detail-route">
+                                    <!-- JS Injected Timeline items -->
+                                </ul>
 
-                            <div class="mt-12 bg-white border-2 border-orange-100 rounded-2xl p-6 shadow-sm relative overflow-hidden"
-                                id="detail-celiac-tip">
-                                <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🌾</div>
-                                <h4 class="font-bold text-orange-800 flex items-center mb-3 text-lg"><span
-                                        class="mr-2">💡</span> Tip Celiaco para hoy</h4>
-                                <p class="text-md text-gray-700 relative z-10 font-medium" id="detail-celiac-text">
-                                    Consejo específico.</p>
-                            </div>
-                            
-                            <!-- Contenedores para Hotel y Restaurantes dinámicos -->
-                            <div id="detail-hotel-container" class="mt-8"></div>
-                            <div id="detail-restaurants-container" class="mt-8 mb-8"></div>
-                            
+                                <div class="mt-12 bg-white border-2 border-orange-100 rounded-2xl p-6 shadow-sm relative overflow-hidden"
+                                    id="detail-celiac-tip">
+                                    <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🌾</div>
+                                    <h4 class="font-bold text-orange-800 flex items-center mb-3 text-lg"><span
+                                            class="mr-2">💡</span> Tip Celiaco para hoy</h4>
+                                    <p class="text-md text-gray-700 relative z-10 font-medium" id="detail-celiac-text">
+                                        Consejo específico.</p>
+                                </div>
+
+                                <!-- Contenedores para Hotel y Restaurantes dinámicos -->
+                                <div id="detail-hotel-container" class="mt-8"></div>
+                                <div id="detail-restaurants-container" class="mt-8 mb-8"></div>
+
                             </div> <!-- Cierre de contenedor flex modificado -->
                         </div>
                     </div>
@@ -744,7 +771,7 @@
                                 se recomienda llevar falda o vestido corto sin leggins."</p>
                         </div>
                     </div>
-                    </div>
+                </div>
                 </div>
             </section>
 
@@ -764,54 +791,107 @@
 
             <!-- ==================== TAB: PRESUPUESTO ==================== -->
             <section id="presupuesto" class="tab-content">
-                <div class="mb-10 text-center md:text-left">
-                    <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight">Presupuesto Estimado 💰</h2>
-                    <p class="text-gray-500 font-medium">Estimaciones para viaje base de 21 días (4 adultos). Varía según el yenes.</p>
+                <div
+                    class="mb-10 flex flex-col md:flex-row justify-between items-center text-center md:text-left border-b border-gray-200 pb-6">
+                    <div>
+                        <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight flex items-center">
+                            <span class="text-japan-accent mr-3">💰</span> Presupuesto de Tripulación</h2>
+                        <p class="text-gray-500 font-medium tracking-tight">Sincronizado en tiempo real a la nube.
+                            Añadid gastos para calcular el balance.</p>
+                    </div>
+                    <div class="flex space-x-3 mt-4 md:mt-0">
+                        <button onclick="promptPin()" title="Acceso al Tesoro"
+                            class="bg-white border border-gray-200 shadow-sm text-gray-400 px-4 py-2.5 rounded-xl font-bold flex items-center hover:bg-gray-50 hover:text-gray-700 hover:shadow transform active:scale-95 transition-all">
+                            <span class="text-xl" id="lock-icon">🔒</span>
+                        </button>
+                        <button onclick="fetchBudget()"
+                            class="bg-white border border-gray-200 shadow-sm text-gray-700 px-5 py-2.5 rounded-xl font-bold flex items-center hover:bg-gray-50 hover:shadow transform active:scale-95 transition-all">
+                            <span class="mr-2">🔄</span> Refrescar
+                        </button>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Tabla de Presupuesto con Tailwind -->
-                    <div class="bg-white rounded-2xl shadow-premium p-6 border border-gray-100 overflow-hidden">
-                        <table class="w-full text-left text-sm text-gray-600 font-medium">
-                            <thead class="bg-gray-50 text-gray-800 uppercase font-bold tracking-wider">
-                                <tr>
-                                    <th scope="col" class="px-6 py-4 rounded-tl-xl border-b border-gray-200">Categoría</th>
-                                    <th scope="col" class="px-6 py-4 rounded-tr-xl border-b border-gray-200 text-right">Costo Estimado (x Persona)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 flex items-center"><span class="mr-3 text-lg">✈️</span> Vuelos I/V</td>
-                                    <td class="px-6 py-4 text-right font-bold text-gray-900">800 - 1,200 €</td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 flex items-center"><span class="mr-3 text-lg">🏨</span> Hoteles (20 noches)</td>
-                                    <td class="px-6 py-4 text-right font-bold text-gray-900">900 - 1,100 €</td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 flex items-center"><span class="mr-3 text-lg">🚄</span> Transporte (JR Pass + Local)</td>
-                                    <td class="px-6 py-4 text-right font-bold text-gray-900">450 - 550 €</td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 flex items-center"><span class="mr-3 text-lg">🍱</span> Comida</td>
-                                    <td class="px-6 py-4 text-right font-bold text-gray-900">600 - 800 €</td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 flex items-center"><span class="mr-3 text-lg">🎟️</span> Extras y Entradas</td>
-                                    <td class="px-6 py-4 text-right font-bold text-gray-900">200 - 400 €</td>
-                                </tr>
-                                <tr class="bg-gray-50/50">
-                                    <td class="px-6 py-5 font-bold text-gray-900 uppercase tracking-widest rounded-bl-xl">Total Global Estimado</td>
-                                    <td class="px-6 py-5 text-right font-bold text-japan-accent text-lg rounded-br-xl">~ 3,500 €</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Formulario para añadir gastos (Columna Izquierda 1/3) -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent self-start">
+                        <h3 class="text-xl font-bold font-serif mb-6 flex items-center"><span
+                                class="text-2xl mr-2 text-gray-300">➕</span> Añadir Gasto</h3>
+                        <form id="budget-form" onsubmit="handleBudgetSubmit(event)" class="space-y-5">
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Concepto
+                                    del Gasto</label>
+                                <input type="text" id="b-name" required
+                                    class="w-full border border-gray-200 shadow-sm rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-japan-accent/60 transition-colors font-medium text-gray-800"
+                                    placeholder="Ej: Billetes Shinkansen">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Categoría
+                                    Logística</label>
+                                <select id="b-category"
+                                    class="w-full border border-gray-200 shadow-sm rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-japan-accent/60 transition-colors font-medium text-gray-800">
+                                    <option value="Vuelos">✈️ Vuelos Principales</option>
+                                    <option value="Hoteles">🏨 Alojamiento Base</option>
+                                    <option value="Transporte">🚄 Transporte Interno</option>
+                                    <option value="Comida">🍱 Comida y Gastronomía</option>
+                                    <option value="Extras">🎟️ Entradas Extras</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Monto
+                                    Estimado (€)</label>
+                                <input type="number" id="b-amount" min="0" step="0.01" required
+                                    class="w-full border border-gray-200 shadow-sm rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-japan-accent/60 transition-colors font-medium text-gray-800"
+                                    placeholder="Ej: 145.50">
+                            </div>
+                            <button type="submit" id="b-submit-btn"
+                                class="w-full bg-japan-accent text-white font-bold py-3.5 rounded-xl shadow-md hover:bg-red-800 hover:shadow-lg transition-all flex items-center justify-center transform active:scale-95 mt-4">
+                                Ingresar al Tesoro
+                            </button>
+                        </form>
                     </div>
 
-                    <!-- Gráfico de Presupuesto -->
-                    <div class="bg-white rounded-2xl shadow-premium p-6 border border-gray-100 flex flex-col justify-center">
-                        <div class="chart-container" style="max-height: 280px; height: 280px;">
-                            <canvas id="budgetChart"></canvas>
+                    <!-- Gráfico y Tabla (Columna Derecha 2/3) -->
+                    <div class="lg:col-span-2 space-y-8">
+                        <!-- Gráfico de Presupuesto -->
+                        <div
+                            class="bg-white rounded-2xl shadow-premium p-6 border border-gray-100 flex flex-col justify-center">
+                            <div class="chart-container" style="max-height: 250px; height: 250px;">
+                                <canvas id="budgetChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de Presupuesto Dinámica -->
+                        <div class="bg-white rounded-2xl shadow-premium overflow-hidden border border-gray-100">
+                            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50">
+                                <h3 class="text-xl font-bold font-serif text-gray-800 flex items-center"><span
+                                        class="mr-2 text-2xl">📋</span> Desglose Consolidado</h3>
+                                <span
+                                    class="bg-white border text-japan-text shadow-sm text-sm font-bold px-4 py-2 rounded-xl"
+                                    id="b-total-text">Total: 0.00 €</span>
+                            </div>
+                            <div class="overflow-x-auto p-0">
+                                <table class="w-full text-left text-sm text-gray-600 font-medium">
+                                    <thead
+                                        class="bg-white text-gray-400 uppercase text-xs font-bold tracking-widest border-b border-gray-100">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-4">Gasto</th>
+                                            <th scope="col" class="px-3 py-4">Fielato</th>
+                                            <th scope="col" class="px-3 py-4 text-right">Monto</th>
+                                            <th scope="col" class="px-3 py-4 text-center">Estado</th>
+                                            <th scope="col" class="px-3 py-4 text-center">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="budget-table-body" class="divide-y divide-gray-50 bg-white">
+                                        <tr>
+                                            <td colspan="5" class="py-8 text-center text-gray-400 italic">Conectando a
+                                                la central de datos en la nube...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -853,12 +933,13 @@
                     setTimeout(renderSummaryMap, 150);
                     window.dashboardRendered = true;
                 }
-                
-                // If switching to budget, render budget chart (only once)
+
+                // If switching to budget, fetch data and chart
                 if (tabId === 'presupuesto' && !window.budgetChartRendered) {
-                    renderBudgetChart();
+                    fetchBudget();
+                    window.budgetChartRendered = true;
                 }
-                
+
                 // If switching to itinerary and a marker is set, fix map size issues
                 if (tabId === 'itinerario' && window.map) {
                     setTimeout(() => window.map.invalidateSize(), 150);
@@ -1005,7 +1086,7 @@
                             <p class="text-xs text-gray-500">${r.desc}</p>
                         </div>
                     `).join('');
-                    
+
                     restsContainer.innerHTML = `
                         <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
                             <div class="flex items-center mb-4">
@@ -1025,7 +1106,7 @@
                     document.getElementById('day-detail-container').classList.add('open');
                     // Ensure scroll is at top of the overlay
                     document.getElementById('day-detail-container').scrollTop = 0;
-                    if(globalLeafletMap) setTimeout(() => globalLeafletMap.invalidateSize(), 300);
+                    if (globalLeafletMap) setTimeout(() => globalLeafletMap.invalidateSize(), 300);
                 } else {
                     // Desktop smooth scroll logic disabled, handled visually
                 }
@@ -1058,13 +1139,13 @@
                 // Recorrer los días de alojamiento (asumo hasta el día 20 inclusive, que están durmiendo allí)
                 itineraryData.slice(0, 20).forEach(day => {
                     let key = day.location;
-                    if(key === 'Fujiyoshida' || key === 'Kamakura' || key === 'Nikko') key = 'Tokio';
-                    if(key === 'Nara' || key === 'Himeji' || key === 'Hiroshima') key = 'Kioto'; 
-                    if(key === 'Gifu') key = 'Takayama'; 
-                    if(dynamicCount[key]) dynamicCount[key]++;
+                    if (key === 'Fujiyoshida' || key === 'Kamakura' || key === 'Nikko') key = 'Tokio';
+                    if (key === 'Nara' || key === 'Himeji' || key === 'Hiroshima') key = 'Kioto';
+                    if (key === 'Gifu') key = 'Takayama';
+                    if (dynamicCount[key]) dynamicCount[key]++;
                     else dynamicCount[key] = 1;
                 });
-                
+
                 const container = document.getElementById('nights-distribution');
                 container.innerHTML = '';
                 Object.entries(dynamicCount).forEach(([city, nights]) => {
@@ -1079,50 +1160,265 @@
 
             let summaryMap = null;
             function renderSummaryMap() {
-                if(summaryMap) return; 
-                
+                if (summaryMap) return;
+
                 document.getElementById('map-loader').style.display = 'none';
 
                 summaryMap = L.map('summary-map', { zoomControl: false });
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                     maxZoom: 19
                 }).addTo(summaryMap);
-                
+
                 const cities = [
-                    {name: "Tokio", lat: 35.6762, lng: 139.6503},
-                    {name: "Kioto", lat: 35.0116, lng: 135.7681},
-                    {name: "Osaka", lat: 34.6937, lng: 135.5023},
-                    {name: "Kanazawa", lat: 36.5613, lng: 136.6562},
-                    {name: "Takayama", lat: 36.1461, lng: 137.2523}
+                    { name: "Tokio", lat: 35.6762, lng: 139.6503 },
+                    { name: "Kioto", lat: 35.0116, lng: 135.7681 },
+                    { name: "Osaka", lat: 34.6937, lng: 135.5023 },
+                    { name: "Kanazawa", lat: 36.5613, lng: 136.6562 },
+                    { name: "Takayama", lat: 36.1461, lng: 137.2523 }
                 ];
-                
+
                 const markers = cities.map(c => {
                     const marker = L.marker([c.lat, c.lng]).addTo(summaryMap);
                     marker.bindPopup(`<b>${c.name}</b>`);
                     return marker;
                 });
-                
+
                 const group = new L.featureGroup(markers);
-                summaryMap.fitBounds(group.getBounds(), {padding: [30, 30]});
+                summaryMap.fitBounds(group.getBounds(), { padding: [30, 30] });
             }
 
-            // --- 6. LOGIC: Render Budget Chart.js ---
-            function renderBudgetChart() {
+            // --- 6. SUPABASE: Colaborative Budget (Secure) ---
+            // Las claves se leen de js/config.js, que no se subirá a GitHub
+            const supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+
+            let budgetChartInstance = null;
+
+            // Al cargar la vista UI vemos si hay PIN y cambiamos el candado
+            function updateLockUI() {
+                const icon = document.getElementById('lock-icon');
+                if(!icon) return;
+                const savedPin = sessionStorage.getItem('trip_pin');
+                icon.innerText = savedPin ? '🔓' : '🔒';
+            }
+
+            function promptPin() {
+                const currentPin = sessionStorage.getItem('trip_pin');
+                if (currentPin) {
+                    if(confirm("¿Deseas cerrar la caja fuerte (borrar PIN actual)?")) {
+                        sessionStorage.removeItem('trip_pin');
+                        updateLockUI();
+                        alert("Caja fuerte cerrada. Tu navegador ya no enviará el PIN.");
+                    }
+                    return;
+                }
+                
+                const code = prompt("Introduce el PIN secreto pactado por la tripulación:");
+                if (code) {
+                    sessionStorage.setItem('trip_pin', code);
+                    updateLockUI();
+                    alert("PIN guardado temporalmente en este navegador. Ya puedes realizar transferencias.");
+                }
+            }
+
+            async function fetchBudget() {
+                const tbody = document.getElementById('budget-table-body');
+                tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-gray-400 font-bold loading-pulse">Cargando la bóveda de datos...</td></tr>';
+
+                try {
+                    // SELECT sigue siendo público (cualquiera puede ver el resumen)
+                    const { data, error } = await supabaseClient
+                        .from('presupuesto')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+
+                    if (error) throw error;
+                    
+                    updateLockUI();
+                    renderBudgetTable(data);
+                    renderBudgetChart(data);
+                } catch (error) {
+                    console.error('Error fetching budget:', error);
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-10 px-8 text-center bg-red-50 text-red-600 rounded-b-xl"><span class="block text-3xl mb-2">⚠️</span><b>Error conectando a Supabase.</b><br><span class="text-xs text-red-500 font-medium">Revisa las claves en tu script o crea la tabla 'presupuesto' como indica el SQL provisto.</span></td></tr>`;
+                    // Render empty chart if it fails
+                    renderBudgetChart([]);
+                }
+            }
+
+            function renderBudgetTable(data) {
+                const tbody = document.getElementById('budget-table-body');
+                const totalText = document.getElementById('b-total-text');
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-gray-400 font-bold italic">Bóveda vacía. Registra el primer gasto.</td></tr>';
+                    totalText.textContent = "Total: 0.00 €";
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                let total = 0;
+
+                data.forEach(item => {
+                    total += parseFloat(item.monto);
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-gray-50 transition-colors group border-b border-gray-100 last:border-0";
+
+                    const isPaid = item.pagado;
+                    const paidClass = isPaid ? 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200' : 'bg-orange-50 text-orange-800 border-orange-200 hover:bg-orange-100';
+                    const paidText = isPaid ? '✅ Pagado' : '⏱️ Pendiente';
+                    const icon = getCategoryIcon(item.categoria);
+
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 font-bold text-gray-900">${item.nombre}</td>
+                        <td class="px-3 py-4 flex items-center text-gray-600 text-xs tracking-wider"><span class="mr-2 text-base filter drop-shadow-sm">${icon}</span> ${item.categoria}</td>
+                        <td class="px-3 py-4 text-right font-bold text-gray-900">${parseFloat(item.monto).toFixed(2)} €</td>
+                        <td class="px-3 py-4 text-center">
+                            <button onclick="togglePaid('${item.id}', ${!isPaid})" class="text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded-lg border ${paidClass} transition-colors cursor-pointer shadow-sm">
+                                ${paidText}
+                            </button>
+                        </td>
+                        <td class="px-3 py-4 text-center">
+                            <button onclick="deleteItem('${item.id}')" class="text-gray-300 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50" title="Eliminar">
+                                🗑️
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                totalText.innerHTML = `Total Real: <span class="text-japan-accent">${total.toFixed(2)} €</span>`;
+            }
+
+            function getCategoryIcon(category) {
+                if (category === 'Vuelos') return '✈️';
+                if (category === 'Hoteles') return '🏨';
+                if (category === 'Transporte') return '🚄';
+                if (category === 'Comida') return '🍱';
+                return '🎟️';
+            }
+
+            // Las funciones de escritura ahora invocan funciones RPC blindadas en el backend
+            async function handleBudgetSubmit(e) {
+                e.preventDefault();
+                const pin = sessionStorage.getItem('trip_pin');
+                if(!pin) {
+                    alert("🔐 Caja fuerte bloqueada. Pulsa el icono del candado arriba a la derecha e introduce el PIN antes de operar.");
+                    return;
+                }
+
+                const btn = document.getElementById('b-submit-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = 'Almacenando... ☁️';
+                btn.classList.add('opacity-70');
+                btn.disabled = true;
+
+                const name = document.getElementById('b-name').value;
+                const cat = document.getElementById('b-category').value;
+                const amt = document.getElementById('b-amount').value;
+
+                try {
+                    // Llamamos a la función protegida en lugar del insert genérico
+                    const { error } = await supabaseClient.rpc('save_expense', {
+                        pin_input: pin,
+                        p_nombre: name,
+                        p_categoria: cat,
+                        p_monto: parseFloat(amt)
+                    });
+                        
+                    if (error) throw error;
+
+                    document.getElementById('budget-form').reset();
+                    await fetchBudget();
+                } catch (error) {
+                    alert('Acceso denegado: ' + error.message);
+                } finally {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('opacity-70');
+                    btn.disabled = false;
+                }
+            }
+
+            async function togglePaid(id, newStatus) {
+                const pin = sessionStorage.getItem('trip_pin');
+                if(!pin) {
+                    alert("🔐 Caja fuerte bloqueada. Necesitas el PIN para modificar datos.");
+                    return;
+                }
+
+                try {
+                    const { error } = await supabaseClient.rpc('toggle_expense_paid', {
+                        pin_input: pin,
+                        p_id: id,
+                        p_status: newStatus
+                    });
+
+                    if (error) throw error;
+                    fetchBudget();
+                } catch (error) {
+                    alert('Acceso denegado: ' + error.message);
+                }
+            }
+
+            async function deleteItem(id) {
+                const pin = sessionStorage.getItem('trip_pin');
+                if(!pin) {
+                    alert("🔐 Caja fuerte bloqueada. Necesitas el PIN para purgar datos.");
+                    return;
+                }
+
+                if (!confirm("¿Deseas purgar permanentemente este gasto de la base de datos central?")) return;
+                try {
+                    const { error } = await supabaseClient.rpc('delete_expense', {
+                        pin_input: pin,
+                        p_id: id
+                    });
+
+                    if (error) throw error;
+                    fetchBudget();
+                } catch (error) {
+                    alert('Acceso denegado: ' + error.message);
+                }
+            }
+
+            // --- 7. LOGIC: Render Dynamic Budget Chart.js ---
+            function renderBudgetChart(data) {
                 const ctx = document.getElementById('budgetChart').getContext('2d');
 
-                new Chart(ctx, {
+                // Agrupar totales por categoría
+                const sums = {
+                    'Vuelos': 0, 'Hoteles': 0, 'Transporte': 0, 'Comida': 0, 'Extras': 0
+                };
+
+                if (data && data.length > 0) {
+                    data.forEach(item => {
+                        if (sums[item.categoria] !== undefined) {
+                            sums[item.categoria] += parseFloat(item.monto);
+                        } else {
+                            sums['Extras'] += parseFloat(item.monto);
+                        }
+                    });
+                }
+
+                const labels = Object.keys(sums);
+                const values = Object.values(sums);
+
+                if (budgetChartInstance) {
+                    budgetChartInstance.destroy();
+                }
+
+                budgetChartInstance = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ['Vuelos', 'Hoteles', 'Transporte', 'Comida', 'Extras'],
+                        labels: labels,
                         datasets: [{
-                            label: 'Costo Promedio Estimado (€)',
-                            data: [1000, 1000, 500, 700, 300],
+                            label: 'Costo Total Consolidado (€)',
+                            data: values,
                             backgroundColor: [
-                                '#3B82F6', // Blue
+                                '#3B82F6', // Blue 
                                 '#10B981', // Green
                                 '#F59E0B', // Amber
-                                '#EF4444', // Red
-                                '#8B5CF6'  // Purple
+                                '#EF4444', // Red 
+                                '#8B5CF6'  // Purple 
                             ],
                             borderWidth: 0,
                             borderRadius: 6
@@ -1134,12 +1430,12 @@
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                display: false // Lo ocultamos porque las labels ya indican el color
+                                display: false
                             },
                             tooltip: {
                                 callbacks: {
                                     label: function (context) {
-                                        return ' €' + context.raw;
+                                        return ' €' + context.raw.toFixed(2);
                                     }
                                 }
                             }
@@ -1165,8 +1461,6 @@
                         }
                     }
                 });
-
-                window.budgetChartRendered = true;
             }
 
             // --- 6. INITIALIZATION ---
