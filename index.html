@@ -26,9 +26,6 @@
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Archivo de Configuración Oculto (GitIgnore) -->
-    <script src="js/config.js"></script>
-
     <!-- Datos -->
     <script src="data.js"></script>
 
@@ -1188,8 +1185,10 @@
             }
 
             // --- 6. SUPABASE: Colaborative Budget (Secure) ---
-            // Las claves se leen de js/config.js, que no se subirá a GitHub
-            const supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+            // ⚠️ Claves de acceso (Es seguro que sean públicas gracias a nuestra barrera de PIN en la BBDD)
+            const supabaseUrl = 'https://gyjkbzosfukbiyxvfoqu.supabase.co';
+            const supabaseKey = 'sb_publishable_UnOPH2ngXlqvnGQtMqXlKg_d49a0iUh'; 
+            const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
             let budgetChartInstance = null;
 
