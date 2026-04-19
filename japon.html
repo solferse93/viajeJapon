@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japón en 21 Días - Guía de Viaje</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Leaflet JS & CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Datos -->
+    <script src="data.js"></script>
+
+    <!-- Tailwind Configuration & Custom CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        japan: {
+                            bg: '#FAF9F6', // Off-white luxury
+                            card: '#FFFFFF',
+                            accent: '#D32F2F', // Deep Japanese Red
+                            wood: '#5D4037', // Dark rich wood
+                            matcha: '#688E6D', // Elegant matcha
+                            text: '#202124',
+                            light: '#F8F9FA'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'system-ui', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'Georgia', 'serif']
+                    },
+                    boxShadow: {
+                        'premium': '0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 0 3px rgba(0,0,0,0.02)',
+                        'floating': '0 10px 40px -10px rgba(0,0,0,0.08)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles to avoid SVGs and manage layout */
+        body {
+            background-color: #FAF9F6;
+            color: #202124;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Premium Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #E0E0E0;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #BDBDBD;
+        }
+
+        /* Hide scrollbar for mobile tabs navigation */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Chart Container Requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+            padding: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        .day-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 3px solid transparent;
+        }
+
+        .day-card:hover {
+            transform: translateX(4px) translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-left-color: rgba(211, 47, 47, 0.4);
+        }
+
+        .day-card.selected {
+            background: linear-gradient(90deg, #FFF9F9 0%, #FFFFFF 100%);
+            border-left: 4px solid #D32F2F;
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.08);
+            transform: translateX(4px);
+        }
+
+        .unicode-icon {
+            font-size: 1.25rem;
+            line-height: 1;
+            margin-right: 0.5rem;
+        }
+
+        /* Mobile Detail Overlay */
+        @media (max-width: 1023px) {
+            .mobile-detail-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: white;
+                z-index: 100;
+                transform: translateX(100%);
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                overflow-y: auto;
+            }
+
+            .mobile-detail-overlay.open {
+                transform: translateX(0);
+            }
+
+            .close-btn {
+                display: flex;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .close-btn {
+                display: none;
+            }
+        }
+    </style>
+
+    <!-- Required Placeholders -->
+    <!-- Chosen Palette: Zen Warmth (Warm off-white background, Matcha green accents, Torii Red highlights, Dark Slate text) -->
+    <!-- Application Structure Plan: The SPA uses a Tabbed Dashboard structure. 
+         Reasoning: A 21-day itinerary is dense. Mirroring a linear document causes cognitive overload and endless scrolling. 
+         By breaking it into "Resumen" (Big picture), "Itinerario" (Interactive dual-pane daily breakdown), "Preparativos" (Actionable checklist), 
+         and "Guía Celiaca" (Crucial health info isolated for quick access), users can navigate directly to their current need. 
+         The interactive itinerary allows viewing the whole list while drilling down into specific days without losing context. -->
+    <!-- Visualization & Content Choices: 
+         1. Report Info: Region distribution -> Goal: Assure "sin agobios" (relaxed pace) -> Viz: Doughnut Chart (Chart.js Canvas) -> Interaction: Hover tooltips -> Justification: Shows visually that time is well-distributed, not just rushing Tokyo/Kyoto. 
+         2. Report Info: Daily Plans -> Goal: Explore -> Viz: Dual-pane interactive list -> Interaction: Click day to reveal details -> Justification: Keeps the UI clean; users only read detailed text for the day they care about. 
+         3. Report Info: Celiac requirements -> Goal: Inform/Protect -> Viz: Thematic text cards -> Interaction: None (reading focus) -> Justification: Medical/dietary info needs clarity and immediate readability above all else. 
+         Method: Tailwind for layout, Vanilla JS for tab/list logic. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Canvas used for charts, Unicode for icons. -->
+
+</head>
+
+<body class="font-sans antialiased text-japan-text flex flex-col min-h-screen">
+
+    <!-- Header Navigation -->
+    <header class="glass-header sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center py-4 md:py-5">
+                <div class="flex items-center w-full md:w-auto mb-4 md:mb-0 justify-center md:justify-start">
+                    <span class="text-4xl mr-3 filter drop-shadow-sm">🇯🇵</span>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-japan-text font-serif tracking-tight">Aventura
+                            Japonesa</h1>
+                        <p class="text-xs md:text-sm text-gray-500 font-medium mt-0.5">30 Oct - 21 Nov | 4 Adultos |
+                            Viaje Relax</p>
+                    </div>
+                </div>
+
+                <!-- Tabs with horizontal scroll on mobile -->
+                <nav class="w-full md:w-auto overflow-x-auto scrollbar-hide py-1">
+                    <div
+                        class="flex space-x-2 bg-gray-100/80 p-1.5 rounded-xl min-w-max md:min-w-0 mx-auto justify-center md:justify-end border border-gray-200/50">
+                        <button onclick="switchTab('resumen')" id="btn-resumen"
+                            class="tab-btn px-5 py-2.5 text-sm font-semibold rounded-lg bg-white shadow-sm text-japan-accent transition-all duration-300 transform active:scale-95">📱
+                            Resumen</button>
+                        <button onclick="switchTab('itinerario')" id="btn-itinerario"
+                            class="tab-btn px-5 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:text-japan-text hover:bg-white/50 transition-all duration-300 transform active:scale-95">🗺️
+                            Itinerario</button>
+                        <button onclick="switchTab('hoteles')" id="btn-hoteles"
+                            class="tab-btn px-5 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:text-japan-text hover:bg-white/50 transition-all duration-300 transform active:scale-95">🏨
+                            Hoteles</button>
+                        <button onclick="switchTab('presupuesto')" id="btn-presupuesto"
+                            class="tab-btn px-5 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:text-japan-text hover:bg-white/50 transition-all duration-300 transform active:scale-95">💰
+                            Presupuesto</button>
+                        <button onclick="switchTab('preparativos')" id="btn-preparativos"
+                            class="tab-btn px-5 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:text-japan-text hover:bg-white/50 transition-all duration-300 transform active:scale-95">🎒
+                            Prepas</button>
+                        <button onclick="switchTab('celiaquia')" id="btn-celiaquia"
+                            class="tab-btn px-5 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:text-japan-text hover:bg-white/50 transition-all duration-300 transform active:scale-95">🌾
+                            Sin Gluten</button>
+                        <button onclick="switchTab('opciones')" id="btn-opciones"
+                            class="tab-btn px-5 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:text-japan-text hover:bg-white/50 transition-all duration-300 transform active:scale-95">💡
+                            Opciones</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Hero Section -->
+        <section class="relative h-[40vh] md:h-[50vh] overflow-hidden">
+            <img src="C:\Users\Sergio\.gemini\antigravity\brain\c5ee25a2-f97f-42e4-becd-130ad20301fb\japan_autumn_hero_1776506556121.png"
+                alt="Kioto en Otoño" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-japan-bg via-transparent to-black/20"></div>
+            <div class="absolute bottom-0 left-0 w-full p-8 md:p-12">
+                <div class="max-w-6xl mx-auto">
+                    <span
+                        class="inline-block px-4 py-1.5 bg-japan-accent text-white text-xs font-bold uppercase tracking-widest rounded-full mb-4 shadow-lg">Premium
+                        Travel Guide</span>
+                    <h1
+                        class="text-4xl md:text-6xl font-serif font-extrabold text-japan-text tracking-tight drop-shadow-sm">
+                        Aventura en el Japón Sagrado</h1>
+                    <p
+                        class="text-lg md:text-xl text-gray-700 mt-4 font-medium max-w-2xl bg-white/30 backdrop-blur-md px-4 py-2 rounded-lg inline-block text-black">
+                        Una travesía de 21 días por la historia, la modernidad y los colores del Momiji.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+
+            <!-- ==================== TAB: RESUMEN ==================== -->
+            <section id="resumen" class="tab-content active">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-16">
+                    <div class="lg:col-span-7">
+                        <h2 class="text-4xl md:text-5xl font-serif font-bold text-japan-text mb-6 tracking-tight">
+                            Konnichiwa! (こんにちは) <span class="inline-block animate-bounce text-3xl md:text-4xl">🌸</span>
+                        </h2>
+                        <p class="text-xl text-gray-600 leading-relaxed">
+                            Este panel será vuestro centro de mando para la expedición a Japón durante la temporada del
+                            <b>Momiji</b> (otoño rojo).
+                        </p>
+                        <p class="text-lg text-gray-500 mt-4 leading-relaxed">
+                            Pace tranquilo, cultura inmersiva y total tranquilidad con la dieta sin gluten. Hemos
+                            diseñado cada jornada para que el equilibrio entre exploración y descanso sea el
+                            protagonista.
+                        </p>
+                    </div>
+                    <div class="lg:col-span-5 relative group">
+                        <div
+                            class="absolute inset-0 bg-japan-accent/10 rounded-3xl blur-2xl group-hover:bg-japan-accent/20 transition-all">
+                        </div>
+                        <img src="C:\Users\Sergio\.gemini\antigravity\brain\c5ee25a2-f97f-42e4-becd-130ad20301fb\fuji_chureito_pagoda_1776506572741.png"
+                            alt="Pagoda Chureito"
+                            class="relative z-10 rounded-3xl shadow-premium border-8 border-white transform -rotate-2 group-hover:rotate-0 transition-transform duration-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <!-- Stats Cards with Premium UI -->
+                    <div
+                        class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent transform transition-transform hover:-translate-y-1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 bg-red-50 rounded-xl">
+                                <span class="text-2xl block">🗓️</span>
+                            </div>
+                            <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400">Duración</h3>
+                        </div>
+                        <p class="text-4xl font-bold text-gray-800">21 <span
+                                class="text-lg font-medium text-gray-500">Días</span></p>
+                        <p
+                            class="text-sm text-gray-500 mt-2 font-medium bg-gray-50 inline-block px-3 py-1 rounded-full">
+                            30 Oct - 21 Nov</p>
+                    </div>
+
+                    <div
+                        class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-matcha transform transition-transform hover:-translate-y-1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 bg-green-50 rounded-xl">
+                                <span class="text-2xl block">🏨</span>
+                            </div>
+                            <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400">Bases</h3>
+                        </div>
+                        <p class="text-4xl font-bold text-gray-800">5 <span
+                                class="text-lg font-medium text-gray-500">Ciudades</span></p>
+                        <p
+                            class="text-sm text-gray-500 mt-2 font-medium bg-gray-50 inline-block px-3 py-1 rounded-full flex-wrap">
+                            Tokio, Kanazawa, Takayama, Kioto, Osaka</p>
+                    </div>
+
+                    <div
+                        class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-wood transform transition-transform hover:-translate-y-1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 bg-orange-50 rounded-xl">
+                                <span class="text-2xl block">🚄</span>
+                            </div>
+                            <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400">Transporte</h3>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-800">JR Pass <span
+                                class="text-lg font-medium text-gray-500">Nacional</span></p>
+                        <p
+                            class="text-sm text-gray-500 mt-2 font-medium bg-gray-50 inline-block px-3 py-1 rounded-full">
+                            Activar día 5 (Kanazawa)</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Chart Section -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 md:p-8">
+                        <div class="flex items-center mb-6">
+                            <h3 class="text-xl font-bold font-serif">Balance del Tiempo</h3>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-6 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            Equilibrio perfecto para evitar el agobio de cambiar de hotel todos los días y disfrutar
+                            profundo cada zona.</p>
+                        <div class="chart-container">
+                            <canvas id="regionChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Highlights Section -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 md:p-8 flex flex-col justify-center">
+                        <h3 class="text-xl font-bold font-serif mb-6 flex items-center"><span
+                                class="text-2xl mr-2">✨</span> Lo Más Destacado</h3>
+                        <ul class="space-y-5">
+                            <li class="flex items-start bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors">
+                                <div class="p-2 bg-white rounded-lg shadow-sm mr-4">
+                                    <span class="unicode-icon text-japan-accent m-0">⛩️</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Tradición y Santuarios</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Kioto imperial, Nara, y el encanto feudal de
+                                        Kanazawa (Días 5, 11-14).</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors">
+                                <div class="p-2 bg-white rounded-lg shadow-sm mr-4">
+                                    <span class="unicode-icon text-japan-matcha m-0">🗻</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Naturaleza y Paisajes</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Alpes Japoneses (Shirakawago), vistas del Fuji
+                                        y macacos en la nieve.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors">
+                                <div class="p-2 bg-white rounded-lg shadow-sm mr-4">
+                                    <span class="unicode-icon text-blue-500 m-0">♨️</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Aguas Termales (Onsen)</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Día de relax total en el valle volcánico de
+                                        Hakone (Día 10).</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== TAB: ITINERARIO ==================== -->
+            <section id="itinerario" class="tab-content h-full">
+                <div class="mb-6 px-2">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-japan-text tracking-tight">Ruta Detallada
+                    </h2>
+                    <p class="text-gray-500 mt-2 font-medium">Pulsa en cualquier carta para desplegar el mapa mental y
+                        tips del día.</p>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-6 lg:h-[800px]">
+                    <!-- Left Column: Day List -->
+                    <!-- Mobile: Shows as a list. Desktop: Scrollable left column -->
+                    <div class="lg:w-1/3 bg-transparent lg:bg-white lg:rounded-2xl lg:shadow-premium lg:border lg:border-gray-100 overflow-y-auto h-full lg:p-3 scrollbar-hide space-y-3 lg:space-y-2 pb-24 lg:pb-0"
+                        id="day-list-container">
+                        <!-- JavaScript will populate this -->
+                    </div>
+
+                    <!-- Right Column / Mobile Overlay: Day Details -->
+                    <div class="mobile-detail-overlay lg:static lg:transform-none lg:w-2/3 bg-white lg:rounded-2xl lg:shadow-floating border-t-4 border-japan-accent overflow-y-auto h-full p-6 md:p-8"
+                        id="day-detail-container">
+                        <!-- Mobile Close Button -->
+                        <button onclick="closeMobileDetail()"
+                            class="close-btn mb-6 flex items-center text-gray-500 hover:text-gray-800 bg-gray-50 px-4 py-2 rounded-full w-max mx-auto shadow-sm fixed top-4 right-4 z-[101] border border-gray-200">
+                            <span class="mr-2">❌</span> Volver
+                        </button>
+
+                        <div class="text-center text-gray-300 mt-40 lg:mt-32" id="empty-state">
+                            <span class="text-7xl mb-6 block filter drop-shadow-md">🗺️</span>
+                            <p class="text-2xl font-serif font-bold text-gray-400">Selecciona tu siguiente parada</p>
+                            <p class="text-gray-400 mt-2">La aventura te espera.</p>
+                        </div>
+
+                        <!-- Details will be injected here by JS -->
+                        <div id="detail-content" class="hidden mt-10 lg:mt-0 flex flex-col">
+                            
+                            <!-- Mapa Leaflet (Visual on mobile / Desktop top) -->
+                            <div id="map-container" class="w-full h-56 md:h-64 bg-gray-100 border border-gray-200 rounded-2xl mb-8 relative z-0 overflow-hidden shadow-sm lg:order-first"></div>
+                            
+                            <div class="lg:order-last w-full">
+                                <div class="flex justify-between items-start mb-8">
+                                    <div>
+                                        <h3 class="text-xs uppercase tracking-widest text-japan-accent font-bold bg-red-50 inline-block px-3 py-1 rounded-full mb-3"
+                                            id="detail-date">Día X - Fecha</h3>
+                                        <h2 class="text-4xl font-serif font-bold tracking-tight text-gray-900 leading-tight"
+                                            id="detail-title">Título del Día</h2>
+                                    </div>
+                                    <div class="text-5xl ml-4 drop-shadow-sm" id="detail-icon">🏙️</div>
+                                </div>
+
+                            <div class="bg-gray-50/80 rounded-2xl p-5 mb-8 text-gray-700 leading-relaxed border-l-4 border-japan-matcha text-lg"
+                                id="detail-description">
+                                Descripción general del ritmo del día.
+                            </div>
+
+                            <h4 class="text-xl font-bold mb-6 font-serif flex items-center"><span
+                                    class="text-2xl mr-2">📍</span> Ruta Sugerida</h4>
+                            <ul class="space-y-8 relative before:absolute before:inset-0 before:ml-[1.1rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-transparent"
+                                id="detail-route">
+                                <!-- JS Injected Timeline items -->
+                            </ul>
+
+                            <div class="mt-12 bg-white border-2 border-orange-100 rounded-2xl p-6 shadow-sm relative overflow-hidden"
+                                id="detail-celiac-tip">
+                                <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🌾</div>
+                                <h4 class="font-bold text-orange-800 flex items-center mb-3 text-lg"><span
+                                        class="mr-2">💡</span> Tip Celiaco para hoy</h4>
+                                <p class="text-md text-gray-700 relative z-10 font-medium" id="detail-celiac-text">
+                                    Consejo específico.</p>
+                            </div>
+                            
+                            <!-- Contenedores para Hotel y Restaurantes dinámicos -->
+                            <div id="detail-hotel-container" class="mt-8"></div>
+                            <div id="detail-restaurants-container" class="mt-8 mb-8"></div>
+                            
+                            </div> <!-- Cierre de contenedor flex modificado -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== TAB: PREPARATIVOS ==================== -->
+            <section id="preparativos" class="tab-content">
+                <div class="mb-10 text-center md:text-left">
+                    <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight">Checklist de Despegue
+                        ✈️</h2>
+                    <p class="text-gray-500 font-medium">Marcad estas casillas. ¡Una buena planificación es el secreto
+                        de un viaje sin agobios!</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Tareas Burocraticas -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 md:p-8 border border-gray-100">
+                        <h3 class="text-2xl font-bold font-serif mb-6 flex items-center text-gray-800"><span
+                                class="text-3xl mr-3">📱</span> Burocracia & Apps</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
+                                onclick="this.querySelector('input').click()">
+                                <div class="pt-1"><input type="checkbox"
+                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
+                                        onclick="event.stopPropagation()"></div>
+                                <div class="ml-4">
+                                    <p
+                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
+                                        Visit Japan Web</p>
+                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Rellenar online aduanas e
+                                        inmigración. Genera códigos QR para pasar el aeropuerto por vía rápida.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
+                                onclick="this.querySelector('input').click()">
+                                <div class="pt-1"><input type="checkbox"
+                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
+                                        onclick="event.stopPropagation()"></div>
+                                <div class="ml-4">
+                                    <p
+                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
+                                        Comprar JR Pass / Tickets</p>
+                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Ya que se subió de precio,
+                                        valoradlo bien. Comprad en la web oficial para poder reservar asientos.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
+                                onclick="this.querySelector('input').click()">
+                                <div class="pt-1"><input type="checkbox"
+                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
+                                        onclick="event.stopPropagation()"></div>
+                                <div class="ml-4">
+                                    <p
+                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
+                                        Internet: eSIM Local</p>
+                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Descargar Ubigi o Holafly e
+                                        instalar antes de volar para tener red nada más aterrizar.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
+                                onclick="this.querySelector('input').click()">
+                                <div class="pt-1"><input type="checkbox"
+                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
+                                        onclick="event.stopPropagation()"></div>
+                                <div class="ml-4">
+                                    <p
+                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
+                                        Reservas Críticas (Klook)</p>
+                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Shibuya Sky (al atardecer) y
+                                        teamLab Borderless (meses de antelación).</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Equipaje y Dinero -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 md:p-8 border border-gray-100">
+                        <h3 class="text-2xl font-bold font-serif mb-6 flex items-center text-gray-800"><span
+                                class="text-3xl mr-3">💴</span> Logística Física</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
+                                onclick="this.querySelector('input').click()">
+                                <div class="pt-1"><input type="checkbox"
+                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
+                                        onclick="event.stopPropagation()"></div>
+                                <div class="ml-4">
+                                    <p
+                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
+                                        Tarjetas Revolut/N26</p>
+                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Cambio sin comisiones.
+                                        Imprescindible sacar Yenes en efectivo en Konbinis (ej. 7-Eleven).</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
+                                onclick="this.querySelector('input').click()">
+                                <div class="pt-1"><input type="checkbox"
+                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
+                                        onclick="event.stopPropagation()"></div>
+                                <div class="ml-4">
+                                    <p
+                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
+                                        Seguro Médico a todo Riesgo</p>
+                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Crucial. La sanidad nipona es
+                                        cara. Confirmad que cubren urgencias por celiaquía.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
+                                onclick="this.querySelector('input').click()">
+                                <div class="pt-1"><input type="checkbox"
+                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
+                                        onclick="event.stopPropagation()"></div>
+                                <div class="ml-4">
+                                    <p
+                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
+                                        Enchufes y PowerBanks</p>
+                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Pin plano tipo A. Llevad baterías
+                                        grandes, allí usaréis mapa GPS todo el tiempo.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </section>
+
+            <!-- ==================== TAB: GUIA CELIAQUIA ==================== -->
+            <section id="celiaquia" class="tab-content">
+                <div class="bg-white rounded-2xl shadow-premium border border-gray-100 overflow-hidden mb-8">
+                    <!-- Banner gradient orange -->
+                    <div class="bg-gradient-to-r from-amber-500 to-orange-600 p-8 md:p-12 text-white relative">
+                        <div class="absolute top-0 right-0 p-8 opacity-20 hidden md:block text-8xl">🌾</div>
+                        <span
+                            class="bg-black/20 text-white text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full inline-block mb-4 backdrop-blur-sm">Supervivencia</span>
+                        <h2 class="text-4xl md:text-5xl font-serif font-bold mb-4 drop-shadow-md">
+                            Guía Sin Gluten en Japón
+                        </h2>
+                        <p class="text-white/90 text-xl font-medium max-w-2xl leading-relaxed">
+                            Viajar a Japón siendo celíaco requiere planificación severa. La salsa de soja (shoyu) lleva
+                            trigo y está en casi todo. Aquí tienes vuestro seguro de vida gastronómico.
+                        </p>
+                    </div>
+
+                    <div class="p-6 md:p-10 grid grid-cols-1 lg:grid-cols-2 gap-10 bg-white">
+
+                        <!-- Frases Útiles -->
+                        <div>
+                            <h3 class="text-2xl font-serif font-bold mb-6 text-gray-800 flex items-center"><span
+                                    class="mr-3 p-2 bg-gray-50 rounded-lg">🗣️</span> Tarjeta Médica</h3>
+                            <div
+                                class="bg-orange-50 border border-orange-200 rounded-2xl p-6 shadow-sm space-y-6 relative">
+                                <div>
+                                    <p class="text-xs text-orange-600 uppercase font-bold tracking-widest mb-1">Para
+                                        enseñar al camarero</p>
+                                    <p class="text-sm font-semibold text-gray-800">Soy Celíaco / Tengo Alergia al Trigo
+                                    </p>
+                                    <div class="bg-white p-4 rounded-xl shadow-sm border border-orange-100 mt-2 hover:border-orange-300 transition-colors cursor-help group"
+                                        title="Watashi wa komugi arerugi desu">
+                                        <p
+                                            class="text-3xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
+                                            私は小麦アレルギーです。</p>
+                                        <p class="text-sm text-gray-500 mt-2 font-medium"><i>Watashi wa komugi arerugī
+                                                desu.</i> <br />(Funciona mejor que decir "celiaquía" en Japón).</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-800">No puedo comer NADA de trigo, cebada,
+                                        avena ni salsa de soja normal.</p>
+                                    <div class="bg-white p-4 rounded-xl shadow-sm border border-orange-100 mt-2">
+                                        <p class="text-xl font-bold text-gray-900">小麦、大麦、オーツ麦、普通の醤油は一切食べられません。</p>
+                                    </div>
+                                </div>
+
+                                <div class="pt-4 border-t border-orange-200/50">
+                                    <p class="text-sm text-orange-800 font-medium"><b>✨ Recomendado:</b> Llevad esto
+                                        impreso en una tarjeta grande y pasadlo siempre en los restaurantes y avisad en
+                                        el Ryokan de Hakone.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comida Segura vs Peligrosa -->
+                        <div>
+                            <h3 class="text-2xl font-serif font-bold mb-6 text-gray-800 flex items-center"><span
+                                    class="mr-3 p-2 bg-gray-50 rounded-lg">🥢</span> Qué comer y evitar</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                                <!-- Verde -->
+                                <div
+                                    class="bg-white rounded-2xl p-6 border-2 border-green-100 shadow-sm relative overflow-hidden">
+                                    <div class="absolute top-0 left-0 w-full h-1 bg-green-500"></div>
+                                    <h4 class="font-bold text-green-700 mb-4 text-lg flex items-center">✅ Seguro</h4>
+                                    <ul class="text-sm text-gray-700 space-y-3 font-medium">
+                                        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <b>Arroz
+                                                blanco</b> (Gohan)</li>
+                                        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>
+                                            <b>Yakitori de Shio</b> (Brochetas con sal. Prohibido "Tare")
+                                        </li>
+                                        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>
+                                            <b>Sashimi crudo</b> (Moja en tu bote de Tamari GF)
+                                        </li>
+                                        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>
+                                            <b>Juwari Soba</b> (100% trigo sarraceno. Fideós fríos sin salsa)
+                                        </li>
+                                        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>
+                                            <b>Yakiniku</b> (Carne asada a la parrilla, sin marinar)
+                                        </li>
+                                        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>
+                                            <b>Onigiri de sal</b> (Shio Musubi del 7/11)
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Rojo -->
+                                <div
+                                    class="bg-white rounded-2xl p-6 border-2 border-red-100 shadow-sm relative overflow-hidden">
+                                    <div class="absolute top-0 left-0 w-full h-1 bg-red-500"></div>
+                                    <h4 class="font-bold text-red-700 mb-4 text-lg flex items-center">❌ Peligroso</h4>
+                                    <ul class="text-sm text-gray-700 space-y-3 font-medium">
+                                        <li class="flex items-start"><span class="text-red-500 mr-2">✕</span> <b>Salsa
+                                                de soja común</b> (Lleva trigo 100%)</li>
+                                        <li class="flex items-start"><span class="text-red-500 mr-2">✕</span>
+                                            <b>Miso</b> (Suelen cortarlo con cebada)
+                                        </li>
+                                        <li class="flex items-start"><span class="text-red-500 mr-2">✕</span>
+                                            <b>Tempura, Tonkatsu</b> (Frituras cruzadas)
+                                        </li>
+                                        <li class="flex items-start"><span class="text-red-500 mr-2">✕</span> <b>Ramen y
+                                                Udon</b> (Sopa mortal con fideos)</li>
+                                        <li class="flex items-start"><span class="text-red-500 mr-2">✕</span>
+                                            <b>Takoyaki</b> (Bolas de masa en Osaka)
+                                        </li>
+                                        <li class="flex items-start"><span class="text-red-500 mr-2">✕</span> <b>Té
+                                                Matcha barato</b> (Cortado con trigo a veces)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== TAB: OPCIONES A VALORAR ==================== -->
+            <section id="opciones" class="tab-content">
+                <div class="mb-10 text-center md:text-left">
+                    <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight">Opciones a Valorar 💡
+                    </h2>
+                    <p class="text-gray-500 font-medium">Destinos y experiencias adicionales para personalizar vuestro
+                        viaje según vuestros intereses.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Temáticos -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 border-l-4 border-blue-500">
+                        <h3 class="text-xl font-bold font-serif mb-4 flex items-center"><span
+                                class="text-2xl mr-2">🎢</span> Parques Temáticos</h3>
+                        <div class="space-y-4 text-sm">
+                            <div class="bg-blue-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-blue-800">USJ & Nintendo World (Osaka)</h4>
+                                <p class="text-gray-600 mt-1 italic">8,900 - 11,900 JPY/adulto</p>
+                                <p class="text-gray-500 mt-2 leading-relaxed">Requiere <b>Area Timed Entry</b> vía App
+                                    USJ nada más entrar o comprar un <b>Express Pass</b> con meses de antelación.</p>
+                            </div>
+                            <div class="bg-indigo-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-indigo-800">Museo Ghibli vs WB Studio Tour</h4>
+                                <p class="text-gray-500 mt-2 leading-relaxed"><b>Ghibli:</b> Lotería día 10 de cada mes.
+                                    <b>Harry Potter:</b> 7,000 JPY, 4-5 horas de inmersión total.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gastronomía & Relax -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 border-l-4 border-orange-500">
+                        <h3 class="text-xl font-bold font-serif mb-4 flex items-center"><span
+                                class="text-2xl mr-2">🥩</span> Gourmet & Tradición</h3>
+                        <div class="space-y-4 text-sm">
+                            <div class="bg-orange-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-orange-800">Carne de Kobe A5</h4>
+                                <p class="text-gray-500 mt-2 leading-relaxed">Reserva 1 mes antes en Kobe (Teppanyaki).
+                                    Indica solo sal y pimienta para evitar el gluten de la soja.</p>
+                            </div>
+                            <div class="bg-amber-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-amber-800">Monte Koya (Koyasan)</h4>
+                                <p class="text-gray-500 mt-2 leading-relaxed">Pernocta en un templo (Shukubo).
+                                    Experiencia espiritual con cocina vegetariana monástica.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rural & Único -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 border-l-4 border-green-500">
+                        <h3 class="text-xl font-bold font-serif mb-4 flex items-center"><span
+                                class="text-2xl mr-2">🦌</span> Naturaleza & Fauna</h3>
+                        <div class="space-y-4 text-sm">
+                            <div class="bg-green-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-green-800">Nagano: Monos & Templos</h4>
+                                <p class="text-gray-600 mt-1 italic">Snow Monkey Pass: 4,800 - 6,800 JPY</p>
+                                <p class="text-gray-500 mt-2 leading-relaxed">Zenkoji (ceremonia alba) y Jigokudani
+                                    (monos en nieve). Requiere desvío en Shinkansen.</p>
+                            </div>
+                            <div class="bg-emerald-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-emerald-800">Okunoshima (Isla Conejos)</h4>
+                                <p class="text-gray-500 mt-2 leading-relaxed">Cerca de Hiroshima. Ferry 360 JPY.
+                                    ¡Comprad la comida en el puerto, no venden en la isla!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arte Inmersivo -->
+                <div
+                    class="mt-8 bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-floating text-white relative overflow-hidden">
+                    <div
+                        class="absolute -right-20 -bottom-20 opacity-20 blur-xl pointer-events-none w-64 h-64 bg-purple-500 rounded-full animate-pulse">
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-10">
+                        <div>
+                            <h3 class="text-2xl font-bold font-serif mb-4 flex items-center"><span
+                                    class="text-3xl mr-3">🎨</span> TeamLab: Elige tu experiencia</h3>
+                            <p class="text-gray-400 mb-6 font-medium">Ambas requieren compra anticipada con 2 meses de
+                                previsión. Elige según tu perfil:</p>
+                            <ul class="space-y-4">
+                                <li class="flex items-start">
+                                    <div class="bg-white/10 p-4 rounded-2xl w-full">
+                                        <h4 class="font-bold text-white mb-2">TeamLab Planets (Toyosu)</h4>
+                                        <p
+                                            class="text-xs text-gray-400 leading-relaxed uppercase tracking-widest font-bold">
+                                            Lineal · Táctil · Agua</p>
+                                        <p class="text-sm text-gray-400 mt-2">Caminas descalzo por agua (rodilla).
+                                            Recorrido guiado de 2 horas. Ideal para grupos dinámicos.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="bg-white/10 p-4 rounded-2xl w-full">
+                                        <h4 class="font-bold text-white mb-2">TeamLab Borderless (Roppongi)</h4>
+                                        <p
+                                            class="text-xs text-gray-400 leading-relaxed uppercase tracking-widest font-bold">
+                                            Laberinto · Visual · Seco</p>
+                                        <p class="text-sm text-gray-400 mt-2">Exploración libre sin mapa. Proyecciones
+                                            más avanzadas. Requiere 3-4 horas para disfrutarlo.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div
+                            class="bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl p-6 border border-white/10 hidden lg:block backdrop-blur-sm">
+                            <p class="text-sm italic text-purple-200">"Ambas instalaciones tienen suelos de espejo. No
+                                se recomienda llevar falda o vestido corto sin leggins."</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== TAB: HOTELES ==================== -->
+            <section id="hoteles" class="tab-content">
+                <div class="mb-10 text-center md:text-left">
+                    <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight">Los Hoteles 🏨</h2>
+                    <p class="text-gray-500 font-medium">Bases de alojamiento recomendadas y enlaces a mapas.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-premium p-8 border border-gray-100 text-center text-gray-400">
+                    <!-- Future implementation placeholder -->
+                    <span class="text-6xl mb-4 block inline-block mt-4 filter grayscale opacity-50">🛏️</span>
+                    <h3 class="text-xl font-bold font-serif mb-2">Sección en Construcción</h3>
+                    <p>Esta pestaña se llenará con la vista consolidada de los alojamientos.</p>
+                </div>
+            </section>
+
+            <!-- ==================== TAB: PRESUPUESTO ==================== -->
+            <section id="presupuesto" class="tab-content">
+                <div class="mb-10 text-center md:text-left">
+                    <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight">Presupuesto Estimado 💰</h2>
+                    <p class="text-gray-500 font-medium">Estimaciones para viaje base de 21 días (4 adultos). Varía según el yenes.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Tabla de Presupuesto con Tailwind -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 border border-gray-100 overflow-hidden">
+                        <table class="w-full text-left text-sm text-gray-600 font-medium">
+                            <thead class="bg-gray-50 text-gray-800 uppercase font-bold tracking-wider">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4 rounded-tl-xl border-b border-gray-200">Categoría</th>
+                                    <th scope="col" class="px-6 py-4 rounded-tr-xl border-b border-gray-200 text-right">Costo Estimado (x Persona)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 flex items-center"><span class="mr-3 text-lg">✈️</span> Vuelos I/V</td>
+                                    <td class="px-6 py-4 text-right font-bold text-gray-900">800 - 1,200 €</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 flex items-center"><span class="mr-3 text-lg">🏨</span> Hoteles (20 noches)</td>
+                                    <td class="px-6 py-4 text-right font-bold text-gray-900">900 - 1,100 €</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 flex items-center"><span class="mr-3 text-lg">🚄</span> Transporte (JR Pass + Local)</td>
+                                    <td class="px-6 py-4 text-right font-bold text-gray-900">450 - 550 €</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 flex items-center"><span class="mr-3 text-lg">🍱</span> Comida</td>
+                                    <td class="px-6 py-4 text-right font-bold text-gray-900">600 - 800 €</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 flex items-center"><span class="mr-3 text-lg">🎟️</span> Extras y Entradas</td>
+                                    <td class="px-6 py-4 text-right font-bold text-gray-900">200 - 400 €</td>
+                                </tr>
+                                <tr class="bg-gray-50/50">
+                                    <td class="px-6 py-5 font-bold text-gray-900 uppercase tracking-widest rounded-bl-xl">Total Global Estimado</td>
+                                    <td class="px-6 py-5 text-right font-bold text-japan-accent text-lg rounded-br-xl">~ 3,500 €</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Gráfico de Presupuesto -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 border border-gray-100 flex flex-col justify-center">
+                        <div class="chart-container" style="max-height: 280px; height: 280px;">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="bg-white border-t py-6 mt-auto">
+            <div class="max-w-6xl mx-auto px-4 text-center text-sm text-gray-500">
+                Generado para el viaje a Japón (30 Oct - 21 Nov) · Diseño sin agobios
+            </div>
+        </footer>
+
+        <!-- JavaScript Logic -->
+        <script>
+            // --- 1. DATA STRUCTURE ---
+            // Data ha sido movida a data.js para una arquitectura más modular.
+
+            // --- 2. LOGIC: Tab Switching ---
+            function switchTab(tabId) {
+                // Update buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('bg-white', 'shadow', 'text-japan-accent');
+                    btn.classList.add('text-gray-600', 'hover:text-japan-text');
+                });
+                const activeBtn = document.getElementById(`btn-${tabId}`);
+                activeBtn.classList.remove('text-gray-600', 'hover:text-japan-text');
+                activeBtn.classList.add('bg-white', 'shadow', 'text-japan-accent');
+
+                // Update content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+
+                // If switching to resume, render chart (only once)
+                if (tabId === 'resumen' && !window.chartRendered) {
+                    renderChart();
+                }
+                
+                // If switching to budget, render budget chart (only once)
+                if (tabId === 'presupuesto' && !window.budgetChartRendered) {
+                    renderBudgetChart();
+                }
+                
+                // If switching to itinerary and a marker is set, fix map size issues
+                if (tabId === 'itinerario' && window.map) {
+                    setTimeout(() => window.map.invalidateSize(), 150);
+                }
+            }
+
+            // --- 3. LOGIC: Render Itinerary List ---
+            function renderItineraryList() {
+                const container = document.getElementById('day-list-container');
+                container.innerHTML = ''; // Clear
+
+                itineraryData.forEach((data, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'day-card p-4 border-b lg:border border-gray-100 cursor-pointer lg:hover:bg-gray-50 flex items-center bg-white lg:rounded-xl mb-0 lg:mb-3 shadow-sm lg:shadow-none transition-all';
+                    card.onclick = () => selectDay(index, card);
+
+                    card.innerHTML = `
+                    <div class="text-3xl md:text-4xl mr-4 filter drop-shadow-sm flex-shrink-0">${data.icon}</div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <p class="text-[10px] md:text-xs font-bold text-japan-accent uppercase tracking-wider bg-red-50 px-2 py-0.5 rounded-full inline-block">Día ${data.day} · ${data.date}</p>
+                            <span class="text-gray-300 lg:hidden text-sm">❯</span>
+                        </div>
+                        <h4 class="font-bold text-gray-900 mt-1 md:text-lg leading-tight line-clamp-1">${data.title}</h4>
+                        <p class="text-xs text-gray-500 flex items-center mt-1.5 font-medium"><span class="unicode-icon text-[10px] mr-1 text-japan-text opacity-70">📍</span>${data.location}</p>
+                    </div>
+                `;
+                    container.appendChild(card);
+                });
+            }
+
+            // Variables globales para mapas
+            let globalLeafletMap = null;
+            let currentMapMarker = null;
+
+            // --- 4. LOGIC: Select Day and Show Details ---
+            function selectDay(index, cardElement) {
+                // Highlight selected card
+                document.querySelectorAll('.day-card').forEach(c => c.classList.remove('selected'));
+                cardElement.classList.add('selected');
+
+                // Hide empty state, show content
+                document.getElementById('empty-state').classList.add('hidden');
+                const contentDiv = document.getElementById('detail-content');
+                contentDiv.classList.remove('hidden');
+
+                const data = itineraryData[index];
+
+                // === Setup Leaflet Map ===
+                if (data.lat && data.lng) {
+                    if (!globalLeafletMap) {
+                        globalLeafletMap = L.map('map-container').setView([data.lat, data.lng], 13);
+                        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                            attribution: '&copy; OpenStreetMap',
+                            maxZoom: 19
+                        }).addTo(globalLeafletMap);
+                        currentMapMarker = L.marker([data.lat, data.lng]).addTo(globalLeafletMap);
+                        window.map = globalLeafletMap; // Export to window for invalidateSize trigger
+                    } else {
+                        globalLeafletMap.setView([data.lat, data.lng], 13);
+                        currentMapMarker.setLatLng([data.lat, data.lng]);
+                        setTimeout(() => globalLeafletMap.invalidateSize(), 50);
+                    }
+                }
+
+                // Populate data
+                document.getElementById('detail-date').textContent = `Día ${data.day} - ${data.date} (${data.location})`;
+                document.getElementById('detail-title').textContent = data.title;
+                document.getElementById('detail-icon').textContent = data.icon;
+                document.getElementById('detail-description').textContent = data.description;
+
+                // Populate Route Timeline
+                const routeContainer = document.getElementById('detail-route');
+                routeContainer.innerHTML = '';
+                data.route.forEach((step, i) => {
+                    const li = document.createElement('li');
+                    li.className = "relative pl-10 pb-6 last:pb-0";
+                    li.innerHTML = `
+                    <span class="absolute left-0 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-japan-accent ring-4 ring-white shadow-sm z-10 text-[10px] text-white font-bold">${i + 1}</span>
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-japan-accent/20 transition-all">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-900 font-bold text-lg leading-tight flex items-center">${step.name}</p>
+                            <span class="text-xs font-bold text-gray-400 bg-gray-50 px-2 py-1 rounded-md ml-2 flex-shrink-0">${step.time || ''}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-3 mt-2">
+                            <span class="text-xs text-japan-matcha font-bold flex items-center"><span class="mr-1">💴</span> ${step.price || 'Gratis'}</span>
+                            <p class="text-sm text-gray-600 leading-relaxed w-full sm:w-auto"><span class="text-gray-400 mr-1">📝</span> ${step.note || ''}</p>
+                        </div>
+                    </div>
+                `;
+                    routeContainer.appendChild(li);
+                });
+
+                // Populate Celiac Info
+                document.getElementById('detail-celiac-text').innerHTML = data.celiac;
+
+                // Populate Hotel Card
+                const hotelContainer = document.getElementById('detail-hotel-container');
+                if (data.hotel && data.hotel.name !== "-") {
+                    hotelContainer.innerHTML = `
+                        <div class="bg-blue-50/50 rounded-2xl p-5 border border-blue-100 shadow-sm flex items-center hover:bg-blue-50 transition-colors cursor-pointer group" onclick="window.open('${data.hotel.mapLink}', '_blank')">
+                            <div class="p-3 bg-white rounded-xl shadow-sm self-start">
+                                <span class="text-2xl drop-shadow-sm block">🏨</span>
+                            </div>
+                            <div class="ml-4 flex-grow">
+                                <p class="text-[10px] uppercase tracking-widest text-blue-600 font-bold mb-1">Tu Alojamiento Diurno</p>
+                                <h4 class="font-bold text-gray-900 group-hover:text-blue-700 transition-colors">${data.hotel.name}</h4>
+                                <p class="text-xs text-gray-500 mt-1">${data.hotel.address}</p>
+                            </div>
+                            <div class="text-blue-300 group-hover:text-blue-500 transition-colors ml-2 flex-shrink-0">
+                                ↗
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    hotelContainer.innerHTML = '';
+                }
+
+                // Populate Restaurants Card
+                const restsContainer = document.getElementById('detail-restaurants-container');
+                if (data.restaurantesSeguros && data.restaurantesSeguros.length > 0) {
+                    let restaurantsHtml = data.restaurantesSeguros.map(r => `
+                        <div class="bg-white rounded-xl p-4 shadow-[0_2px_8px_rgb(0,0,0,0.04)] mb-3 last:mb-0 border border-gray-100 border-l-4 border-l-green-400">
+                            <h5 class="font-bold text-gray-800 text-sm mb-1">${r.name}</h5>
+                            <p class="text-xs text-gray-500">${r.desc}</p>
+                        </div>
+                    `).join('');
+                    
+                    restsContainer.innerHTML = `
+                        <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                            <div class="flex items-center mb-4">
+                                <span class="text-2xl mr-3">🍽️</span>
+                                <h4 class="font-bold font-serif text-lg">Opciones Seguras Cercanas</h4>
+                            </div>
+                            ${restaurantsHtml}
+                        </div>
+                    `;
+                } else {
+                    restsContainer.innerHTML = '';
+                }
+
+                // Handle Mobile Device Logic
+                if (window.innerWidth < 1024) {
+                    // Open overlay instead of scrolling
+                    document.getElementById('day-detail-container').classList.add('open');
+                    // Ensure scroll is at top of the overlay
+                    document.getElementById('day-detail-container').scrollTop = 0;
+                    if(globalLeafletMap) setTimeout(() => globalLeafletMap.invalidateSize(), 300);
+                } else {
+                    // Desktop smooth scroll logic disabled, handled visually
+                }
+            }
+
+            // --- Mobile Overlay Close ---
+            function closeMobileDetail() {
+                document.getElementById('day-detail-container').classList.remove('open');
+            }
+
+            // --- 5. LOGIC: Render Chart.js ---
+            function renderChart() {
+                const ctx = document.getElementById('regionChart').getContext('2d');
+
+                // Calculate days per region roughly based on the array
+                const regionData = {
+                    'Kanto (Tokio, Nikko, Kamakura, Fuji)': 8,
+                    'Alpes (Kanazawa, Takayama, Nagano)': 4,
+                    'Kansai (Kioto, Osaka, Nara, Kobe)': 7,
+                    'Chugoku (Hiroshima, Miyajima)': 2
+                };
+
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(regionData),
+                        datasets: [{
+                            data: Object.values(regionData),
+                            backgroundColor: [
+                                '#C73E3A', // Torii Red
+                                '#8B5A2B', // Wood
+                                '#8C9A8B', // Matcha
+                                '#2C3E50'  // Dark slate
+                            ],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false, // CRUCIAL: Allows container to control size
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    font: {
+                                        family: "'Segoe UI', 'Helvetica Neue', 'sans-serif'"
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return ' ' + context.label + ': ' + context.raw + ' Días';
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '60%'
+                    }
+                });
+
+                window.chartRendered = true;
+            }
+
+            // --- 6. LOGIC: Render Budget Chart.js ---
+            function renderBudgetChart() {
+                const ctx = document.getElementById('budgetChart').getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Vuelos', 'Hoteles', 'Transporte', 'Comida', 'Extras'],
+                        datasets: [{
+                            label: 'Costo Promedio Estimado (€)',
+                            data: [1000, 1000, 500, 700, 300],
+                            backgroundColor: [
+                                '#3B82F6', // Blue
+                                '#10B981', // Green
+                                '#F59E0B', // Amber
+                                '#EF4444', // Red
+                                '#8B5CF6'  // Purple
+                            ],
+                            borderWidth: 0,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', // Hace que la barra sea horizontal
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false // Lo ocultamos porque las labels ya indican el color
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return ' €' + context.raw;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        family: "'Outfit', 'sans-serif'",
+                                        weight: '600'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                window.budgetChartRendered = true;
+            }
+
+            // --- 6. INITIALIZATION ---
+            document.addEventListener('DOMContentLoaded', () => {
+                renderItineraryList();
+                renderChart(); // Initial render for default tab
+            });
+
+        </script>
+</body>
+
+</html>
