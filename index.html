@@ -272,129 +272,63 @@
         <!-- Main Content Area -->
         <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
 
-            <!-- ==================== TAB: RESUMEN ==================== -->
+            <!-- ==================== TAB: RESUMEN (DASHBOARD) ==================== -->
             <section id="resumen" class="tab-content active">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-16">
-                    <div class="lg:col-span-7">
-                        <h2 class="text-4xl md:text-5xl font-serif font-bold text-japan-text mb-6 tracking-tight">
-                            Konnichiwa! (こんにちは) <span class="inline-block animate-bounce text-3xl md:text-4xl">🌸</span>
-                        </h2>
-                        <p class="text-xl text-gray-600 leading-relaxed">
-                            Este panel será vuestro centro de mando para la expedición a Japón durante la temporada del
-                            <b>Momiji</b> (otoño rojo).
-                        </p>
-                        <p class="text-lg text-gray-500 mt-4 leading-relaxed">
-                            Pace tranquilo, cultura inmersiva y total tranquilidad con la dieta sin gluten. Hemos
-                            diseñado cada jornada para que el equilibrio entre exploración y descanso sea el
-                            protagonista.
-                        </p>
-                    </div>
-                    <div class="lg:col-span-5 relative group">
-                        <div
-                            class="absolute inset-0 bg-japan-accent/10 rounded-3xl blur-2xl group-hover:bg-japan-accent/20 transition-all">
+                <div class="mb-8">
+                    <h2 class="text-4xl md:text-5xl font-serif font-bold text-japan-text tracking-tight">Konnichiwa! (こんにちは) <span class="inline-block animate-bounce text-3xl md:text-4xl">🌸</span></h2>
+                    <p class="text-xl text-gray-600 leading-relaxed mt-4">Centro de mando para la expedición a Japón durante la temporada del <b>Momiji</b>.</p>
+                </div>
+
+                <!-- Fila Superior (Widgets rápidos) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Tarjeta 1: Fechas y Progreso -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent flex flex-col justify-center relative overflow-hidden">
+                        <div class="absolute right-0 top-0 opacity-5 text-8xl -mr-4 -mt-4">🗻</div>
+                        <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400 flex items-center mb-2"><span class="text-xl mr-2">🗓️</span> Expedición Sagrada</h3>
+                        <p class="text-3xl font-bold text-gray-800">30 Oct - 21 Nov</p>
+                        <div class="mt-4 flex items-center">
+                            <span class="bg-red-50 text-japan-accent text-sm font-bold px-3 py-1 rounded-full">21 Días Total</span>
+                            <span class="ml-3 text-sm text-gray-500 font-medium border-l border-gray-200 pl-3">4 Adultos</span>
                         </div>
-                        <img src="C:\Users\Sergio\.gemini\antigravity\brain\c5ee25a2-f97f-42e4-becd-130ad20301fb\fuji_chureito_pagoda_1776506572741.png"
-                            alt="Pagoda Chureito"
-                            class="relative z-10 rounded-3xl shadow-premium border-8 border-white transform -rotate-2 group-hover:rotate-0 transition-transform duration-500">
+                    </div>
+
+                    <!-- Tarjeta 2: Distribución de Pernoctaciones -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-matcha">
+                        <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400 flex items-center mb-4"><span class="text-xl mr-2">🏨</span> Bases de Alojamiento</h3>
+                        <div id="nights-distribution" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-center">
+                            <!-- Injected by JS -->
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    <!-- Stats Cards with Premium UI -->
-                    <div
-                        class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent transform transition-transform hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-3 bg-red-50 rounded-xl">
-                                <span class="text-2xl block">🗓️</span>
+                <!-- Fila Central (Mapa y Logística) -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Columna Ancha: Mapa General -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-premium p-6 border border-gray-100 flex flex-col">
+                        <h3 class="text-xl font-bold font-serif mb-4 flex items-center"><span class="text-2xl mr-2">🗺️</span> Ruta Estratégica Nacional</h3>
+                        <div id="summary-map" class="w-full h-80 rounded-xl border border-gray-200 z-0 flex-grow relative bg-gray-100 shadow-inner">
+                            <!-- Placeholder visual mientra carga Leaflet -->
+                            <div class="absolute inset-0 flex items-center justify-center text-gray-400 font-bold" id="map-loader">
+                                Cargando cartografía...
                             </div>
-                            <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400">Duración</h3>
-                        </div>
-                        <p class="text-4xl font-bold text-gray-800">21 <span
-                                class="text-lg font-medium text-gray-500">Días</span></p>
-                        <p
-                            class="text-sm text-gray-500 mt-2 font-medium bg-gray-50 inline-block px-3 py-1 rounded-full">
-                            30 Oct - 21 Nov</p>
-                    </div>
-
-                    <div
-                        class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-matcha transform transition-transform hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-3 bg-green-50 rounded-xl">
-                                <span class="text-2xl block">🏨</span>
-                            </div>
-                            <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400">Bases</h3>
-                        </div>
-                        <p class="text-4xl font-bold text-gray-800">5 <span
-                                class="text-lg font-medium text-gray-500">Ciudades</span></p>
-                        <p
-                            class="text-sm text-gray-500 mt-2 font-medium bg-gray-50 inline-block px-3 py-1 rounded-full flex-wrap">
-                            Tokio, Kanazawa, Takayama, Kioto, Osaka</p>
-                    </div>
-
-                    <div
-                        class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-wood transform transition-transform hover:-translate-y-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-3 bg-orange-50 rounded-xl">
-                                <span class="text-2xl block">🚄</span>
-                            </div>
-                            <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400">Transporte</h3>
-                        </div>
-                        <p class="text-3xl font-bold text-gray-800">JR Pass <span
-                                class="text-lg font-medium text-gray-500">Nacional</span></p>
-                        <p
-                            class="text-sm text-gray-500 mt-2 font-medium bg-gray-50 inline-block px-3 py-1 rounded-full">
-                            Activar día 5 (Kanazawa)</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Chart Section -->
-                    <div class="bg-white rounded-2xl shadow-premium p-6 md:p-8">
-                        <div class="flex items-center mb-6">
-                            <h3 class="text-xl font-bold font-serif">Balance del Tiempo</h3>
-                        </div>
-                        <p class="text-sm text-gray-500 mb-6 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                            Equilibrio perfecto para evitar el agobio de cambiar de hotel todos los días y disfrutar
-                            profundo cada zona.</p>
-                        <div class="chart-container">
-                            <canvas id="regionChart"></canvas>
                         </div>
                     </div>
 
-                    <!-- Highlights Section -->
-                    <div class="bg-white rounded-2xl shadow-premium p-6 md:p-8 flex flex-col justify-center">
-                        <h3 class="text-xl font-bold font-serif mb-6 flex items-center"><span
-                                class="text-2xl mr-2">✨</span> Lo Más Destacado</h3>
-                        <ul class="space-y-5">
-                            <li class="flex items-start bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors">
-                                <div class="p-2 bg-white rounded-lg shadow-sm mr-4">
-                                    <span class="unicode-icon text-japan-accent m-0">⛩️</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-900">Tradición y Santuarios</h4>
-                                    <p class="text-sm text-gray-600 mt-1">Kioto imperial, Nara, y el encanto feudal de
-                                        Kanazawa (Días 5, 11-14).</p>
-                                </div>
+                    <!-- Columna Estrecha: Avisos Críticos -->
+                    <div class="lg:col-span-1 bg-white rounded-2xl shadow-premium p-6 border border-gray-100">
+                        <h3 class="text-xl font-bold font-serif mb-4 flex items-center text-red-700"><span class="text-2xl mr-2">⚠️</span> Avisos Críticos</h3>
+                        <ul class="space-y-4 text-left">
+                            <li class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl">
+                                <h4 class="font-bold text-gray-900 flex items-center"><span class="mr-2">📱</span> Visit Japan Web</h4>
+                                <p class="text-sm text-gray-700 mt-1 font-medium">Llevad los <b>códigos QR</b> en capturas de pantalla por si falla el internet al aterrizar.</p>
                             </li>
-                            <li class="flex items-start bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors">
-                                <div class="p-2 bg-white rounded-lg shadow-sm mr-4">
-                                    <span class="unicode-icon text-japan-matcha m-0">🗻</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-900">Naturaleza y Paisajes</h4>
-                                    <p class="text-sm text-gray-600 mt-1">Alpes Japoneses (Shirakawago), vistas del Fuji
-                                        y macacos en la nieve.</p>
-                                </div>
+                            <li class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-xl">
+                                <h4 class="font-bold text-gray-900 flex items-center"><span class="mr-2">🧳</span> Takkyubin Obligatorio</h4>
+                                <p class="text-sm text-gray-700 mt-1 font-medium">Imposible subir maletas grandes al Shinkansen sin reserva. <b>Enviad maletas extra desde Tokio a Osaka</b>.</p>
                             </li>
-                            <li class="flex items-start bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors">
-                                <div class="p-2 bg-white rounded-lg shadow-sm mr-4">
-                                    <span class="unicode-icon text-blue-500 m-0">♨️</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-900">Aguas Termales (Onsen)</h4>
-                                    <p class="text-sm text-gray-600 mt-1">Día de relax total en el valle volcánico de
-                                        Hakone (Día 10).</p>
-                                </div>
+                            <li class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
+                                <h4 class="font-bold text-gray-900 flex items-center"><span class="mr-2">📡</span> eSIM Individual</h4>
+                                <p class="text-sm text-gray-700 mt-1 font-medium">Cada viajero <b>debe llevar su propia conexión</b> (Ubigi/Holafly). No dependáis solo de uno.</p>
                             </li>
                         </ul>
                     </div>
@@ -931,9 +865,11 @@
                 });
                 document.getElementById(tabId).classList.add('active');
 
-                // If switching to resume, render chart (only once)
-                if (tabId === 'resumen' && !window.chartRendered) {
-                    renderChart();
+                // If switching to resume, render map and dashboard data
+                if (tabId === 'resumen' && !window.dashboardRendered) {
+                    renderDashboard();
+                    setTimeout(renderSummaryMap, 150);
+                    window.dashboardRendered = true;
                 }
                 
                 // If switching to budget, render budget chart (only once)
@@ -1018,17 +954,26 @@
                 data.route.forEach((step, i) => {
                     const li = document.createElement('li');
                     li.className = "relative pl-10 pb-6 last:pb-0";
+
+                    // Accordion interactivo
+                    const hasExtended = !!step.extended_info;
+                    const cursorClass = hasExtended ? "cursor-pointer" : "";
+                    const arrowIcon = hasExtended ? `<svg class="expand-icon w-5 h-5 ml-2 text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>` : "";
+                    const extendedHtml = hasExtended ? `<div class="extended-info hidden mt-4 pt-4 border-t border-gray-100 text-sm text-gray-700 leading-relaxed space-y-2 opacity-0 transition-opacity duration-300">${step.extended_info}</div>` : "";
+                    const onClickAttr = hasExtended ? `onclick="toggleAccordion(this)"` : "";
+
                     li.innerHTML = `
                     <span class="absolute left-0 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-japan-accent ring-4 ring-white shadow-sm z-10 text-[10px] text-white font-bold">${i + 1}</span>
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-japan-accent/20 transition-all">
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-japan-accent/20 transition-all ${cursorClass}" ${onClickAttr}>
                         <div class="flex justify-between items-start mb-2">
-                            <p class="text-gray-900 font-bold text-lg leading-tight flex items-center">${step.name}</p>
+                            <p class="text-gray-900 font-bold text-lg leading-tight flex items-center">${step.name} ${arrowIcon}</p>
                             <span class="text-xs font-bold text-gray-400 bg-gray-50 px-2 py-1 rounded-md ml-2 flex-shrink-0">${step.time || ''}</span>
                         </div>
                         <div class="flex flex-wrap gap-3 mt-2">
                             <span class="text-xs text-japan-matcha font-bold flex items-center"><span class="mr-1">💴</span> ${step.price || 'Gratis'}</span>
                             <p class="text-sm text-gray-600 leading-relaxed w-full sm:w-auto"><span class="text-gray-400 mr-1">📝</span> ${step.note || ''}</p>
                         </div>
+                        ${extendedHtml}
                     </div>
                 `;
                     routeContainer.appendChild(li);
@@ -1099,61 +1044,74 @@
                 document.getElementById('day-detail-container').classList.remove('open');
             }
 
-            // --- 5. LOGIC: Render Chart.js ---
-            function renderChart() {
-                const ctx = document.getElementById('regionChart').getContext('2d');
+            function toggleAccordion(element) {
+                const infoDiv = element.querySelector('.extended-info');
+                const icon = element.querySelector('.expand-icon');
+                if (!infoDiv) return;
 
-                // Calculate days per region roughly based on the array
-                const regionData = {
-                    'Kanto (Tokio, Nikko, Kamakura, Fuji)': 8,
-                    'Alpes (Kanazawa, Takayama, Nagano)': 4,
-                    'Kansai (Kioto, Osaka, Nara, Kobe)': 7,
-                    'Chugoku (Hiroshima, Miyajima)': 2
-                };
+                if (infoDiv.classList.contains('hidden')) {
+                    infoDiv.classList.remove('hidden');
+                    setTimeout(() => infoDiv.classList.remove('opacity-0'), 10);
+                    icon.classList.add('rotate-180');
+                } else {
+                    infoDiv.classList.add('opacity-0');
+                    icon.classList.remove('rotate-180');
+                    setTimeout(() => infoDiv.classList.add('hidden'), 300);
+                }
+            }
 
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(regionData),
-                        datasets: [{
-                            data: Object.values(regionData),
-                            backgroundColor: [
-                                '#C73E3A', // Torii Red
-                                '#8B5A2B', // Wood
-                                '#8C9A8B', // Matcha
-                                '#2C3E50'  // Dark slate
-                            ],
-                            borderWidth: 0,
-                            hoverOffset: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false, // CRUCIAL: Allows container to control size
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    padding: 20,
-                                    usePointStyle: true,
-                                    font: {
-                                        family: "'Segoe UI', 'Helvetica Neue', 'sans-serif'"
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        return ' ' + context.label + ': ' + context.raw + ' Días';
-                                    }
-                                }
-                            }
-                        },
-                        cutout: '60%'
-                    }
+            // --- 5. LOGIC: Render Dashboard Data ---
+            function renderDashboard() {
+                const dynamicCount = {};
+                // Recorrer los días de alojamiento (asumo hasta el día 20 inclusive, que están durmiendo allí)
+                itineraryData.slice(0, 20).forEach(day => {
+                    let key = day.location;
+                    if(key === 'Fujiyoshida' || key === 'Kamakura' || key === 'Nikko') key = 'Tokio';
+                    if(key === 'Nara' || key === 'Himeji' || key === 'Hiroshima') key = 'Kioto'; 
+                    if(key === 'Gifu') key = 'Takayama'; 
+                    if(dynamicCount[key]) dynamicCount[key]++;
+                    else dynamicCount[key] = 1;
                 });
+                
+                const container = document.getElementById('nights-distribution');
+                container.innerHTML = '';
+                Object.entries(dynamicCount).forEach(([city, nights]) => {
+                    container.innerHTML += `
+                        <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col justify-center items-center">
+                            <span class="text-2xl font-bold text-gray-800">${nights}</span>
+                            <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">${city}</span>
+                        </div>
+                    `;
+                });
+            }
 
-                window.chartRendered = true;
+            let summaryMap = null;
+            function renderSummaryMap() {
+                if(summaryMap) return; 
+                
+                document.getElementById('map-loader').style.display = 'none';
+
+                summaryMap = L.map('summary-map', { zoomControl: false });
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19
+                }).addTo(summaryMap);
+                
+                const cities = [
+                    {name: "Tokio", lat: 35.6762, lng: 139.6503},
+                    {name: "Kioto", lat: 35.0116, lng: 135.7681},
+                    {name: "Osaka", lat: 34.6937, lng: 135.5023},
+                    {name: "Kanazawa", lat: 36.5613, lng: 136.6562},
+                    {name: "Takayama", lat: 36.1461, lng: 137.2523}
+                ];
+                
+                const markers = cities.map(c => {
+                    const marker = L.marker([c.lat, c.lng]).addTo(summaryMap);
+                    marker.bindPopup(`<b>${c.name}</b>`);
+                    return marker;
+                });
+                
+                const group = new L.featureGroup(markers);
+                summaryMap.fitBounds(group.getBounds(), {padding: [30, 30]});
             }
 
             // --- 6. LOGIC: Render Budget Chart.js ---
@@ -1222,7 +1180,9 @@
             // --- 6. INITIALIZATION ---
             document.addEventListener('DOMContentLoaded', () => {
                 renderItineraryList();
-                renderChart(); // Initial render for default tab
+                renderDashboard();
+                setTimeout(renderSummaryMap, 200); // Darle tiempo al layout para expandir el mapa
+                window.dashboardRendered = true;
             });
 
         </script>
