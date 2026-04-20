@@ -1,0 +1,25 @@
+Actúa como un analista de datos de viajes. He adjuntado un documento con la guía de un viaje. Quiero que extraigas la información y me generes el itinerario completo en formato JSON estricto.
+
+Sigue EXACTAMENTE esta estructura para cada día. No inventes campos nuevos.
+[
+  {
+    "day": 1,
+    "date": "Fecha",
+    "title": "Título del Día",
+    "icon": "Añade un emoji representativo",
+    "location": "Ciudad base",
+    "description": "Resumen general del ritmo de ese día (1-2 líneas).",
+    "route": [
+      {
+        "name": "Nombre de la Actividad/Lugar",
+        "time": "Horario aproximado",
+        "price": "Precio estimado",
+        "brief_note": "Descripción muy breve (1 línea) para la vista colapsada.",
+        "detailed_info": "Toda la información detallada, curiosidades, historia y consejos logísticos extraídos de la guía. Usa etiquetas HTML básicas como <p> y <b> para darle formato a este texto."
+      }
+    ],
+    "celiac": "Consejos sobre comida sin gluten para ese día y ciudad (si aplica)."
+  }
+]
+
+Devuélveme SOLO el código JSON válido, listo para ser copiado en mi archivo data.js. Asegúrate de procesar todos los días mencionados en el documento."
