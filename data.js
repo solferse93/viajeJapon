@@ -1,3 +1,13 @@
+const tripConfig = {
+    id: 'japon_2026',
+    title: 'Aventura Japonesa',
+    dates: '30 Oct - 21 Nov',
+    pax: '4 Adultos',
+    coverImage: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop', // Imagen de ejemplo (Tokio en otoño)
+    supabaseUrl: 'https://gyjkbzosfukbiyxvfoqu.supabase.co',
+    supabaseKey: 'sb_publishable_UnOPH2ngXlqvnGQtMqXlKg_d49a0iUh'
+};
+
 const itineraryData = [
     {
         "day": 1,

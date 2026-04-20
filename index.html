@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japón en 21 Días - Guía de Viaje</title>
+    <title id="dom-title">Guía de Viaje</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -214,12 +214,10 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center py-4 md:py-5">
                 <div class="flex items-center w-full md:w-auto mb-4 md:mb-0 justify-center md:justify-start">
-                    <span class="text-4xl mr-3 filter drop-shadow-sm">🇯🇵</span>
+                    <span id="app-icon" class="text-4xl mr-3 filter drop-shadow-sm">✈️</span>
                     <div>
-                        <h1 class="text-2xl md:text-3xl font-bold text-japan-text font-serif tracking-tight">Aventura
-                            Japonesa</h1>
-                        <p class="text-xs md:text-sm text-gray-500 font-medium mt-0.5">30 Oct - 21 Nov | 4 Adultos |
-                            Viaje Relax</p>
+                        <h1 id="app-header-title" class="text-2xl md:text-3xl font-bold text-japan-text font-serif tracking-tight">Cargando...</h1>
+                        <p id="app-header-subtitle" class="text-xs md:text-sm text-gray-500 font-medium mt-0.5">Fecha | Integrantes | Estilo</p>
                     </div>
                 </div>
 
@@ -260,10 +258,8 @@
             <!-- ==================== TAB: RESUMEN (DASHBOARD) ==================== -->
             <section id="resumen" class="tab-content active">
                 <div class="mb-8">
-                    <h2 class="text-4xl md:text-5xl font-serif font-bold text-japan-text tracking-tight">Konnichiwa!
-                        (こんにちは) <span class="inline-block animate-bounce text-3xl md:text-4xl">🌸</span></h2>
-                    <p class="text-xl text-gray-600 leading-relaxed mt-4">Centro de mando para la expedición a Japón
-                        durante la temporada del <b>Momiji</b>.</p>
+                    <h2 id="welcome-title" class="text-4xl md:text-5xl font-serif font-bold text-japan-text tracking-tight">Cargando... <span class="inline-block animate-bounce text-3xl md:text-4xl">👋</span></h2>
+                    <p id="welcome-subtitle" class="text-xl text-gray-600 leading-relaxed mt-4">Cargando información del viaje...</p>
                 </div>
 
                 <!-- Fila Superior (Widgets rápidos) -->
@@ -271,15 +267,13 @@
                     <!-- Tarjeta 1: Fechas y Progreso -->
                     <div
                         class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent flex flex-col justify-center relative overflow-hidden">
-                        <div class="absolute right-0 top-0 opacity-5 text-8xl -mr-4 -mt-4">🗻</div>
+                        <div class="absolute right-0 top-0 opacity-5 text-8xl -mr-4 -mt-4">🗺️</div>
                         <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400 flex items-center mb-2">
-                            <span class="text-xl mr-2">🗓️</span> Expedición Sagrada</h3>
-                        <p class="text-3xl font-bold text-gray-800">30 Oct - 21 Nov</p>
+                            <span class="text-xl mr-2">🗓️</span> Estadísticas del Viaje</h3>
+                        <p id="dash-dates" class="text-3xl font-bold text-gray-800">Cargando...</p>
                         <div class="mt-4 flex items-center">
-                            <span class="bg-red-50 text-japan-accent text-sm font-bold px-3 py-1 rounded-full">21 Días
-                                Total</span>
-                            <span class="ml-3 text-sm text-gray-500 font-medium border-l border-gray-200 pl-3">4
-                                Adultos</span>
+                            <span id="dash-status" class="bg-red-50 text-japan-accent text-sm font-bold px-3 py-1 rounded-full">Activo</span>
+                            <span id="dash-pax" class="ml-3 text-sm text-gray-500 font-medium border-l border-gray-200 pl-3">Invitados</span>
                         </div>
                     </div>
 
@@ -779,14 +773,67 @@
             <!-- ==================== TAB: HOTELES ==================== -->
             <section id="hoteles" class="tab-content">
                 <div class="mb-10 text-center md:text-left">
-                    <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight">Los Hoteles 🏨</h2>
-                    <p class="text-gray-500 font-medium">Bases de alojamiento recomendadas y enlaces a mapas.</p>
+                    <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight">Gestión de Alojamientos 🏨</h2>
+                    <p class="text-gray-500 font-medium">Bases de alojamiento y enlaces a mapas.</p>
                 </div>
-                <div class="bg-white rounded-2xl shadow-premium p-8 border border-gray-100 text-center text-gray-400">
-                    <!-- Future implementation placeholder -->
-                    <span class="text-6xl mb-4 block inline-block mt-4 filter grayscale opacity-50">🛏️</span>
-                    <h3 class="text-xl font-bold font-serif mb-2">Sección en Construcción</h3>
-                    <p>Esta pestaña se llenará con la vista consolidada de los alojamientos.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Formulario Hotel -->
+                    <div class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent self-start">
+                        <h3 class="text-xl font-bold font-serif mb-6 flex items-center"><span class="text-2xl mr-2 text-gray-300">➕</span> Nuevo Hotel</h3>
+                        <form id="hotel-form" onsubmit="event.preventDefault(); addHotel();" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Ciudad</label>
+                                <select id="h-city" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 bg-gray-50 text-sm font-medium">
+                                    <!-- Populated dynamically by JS -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Nombre del Hotel</label>
+                                <input type="text" id="h-name" required class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm" placeholder="Ej: Keio Plaza Hotel">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Enlace Maps/Booking</label>
+                                <input type="url" id="h-link" class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm" placeholder="https://...">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Check-in</label>
+                                    <input type="date" id="h-checkin" required class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Check-out</label>
+                                    <input type="date" id="h-checkout" required class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Precio</label>
+                                    <input type="number" id="h-price" min="0" step="0.01" class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm" placeholder="Ej: 450">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Estado</label>
+                                    <select id="h-status" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 bg-gray-50 text-sm font-medium">
+                                        <option value="Pagado">✅ Pagado</option>
+                                        <option value="Pago en Destino">⏱️ Pago en Destino</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Notas</label>
+                                <textarea id="h-notes" rows="2" class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm" placeholder="Indicaciones extra..."></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-japan-accent text-white font-bold py-3 rounded-xl shadow-md hover:bg-red-800 transition-all transform active:scale-95">Guardar Hotel</button>
+                        </form>
+                    </div>
+
+                    <!-- Lista de Hoteles -->
+                    <div class="lg:col-span-2">
+                        <div id="hotels-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Cards mapped by JS -->
+                            <p class="text-center text-gray-400 py-12 col-span-full">Cargando registros de alojamiento...</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -901,15 +948,51 @@
         </main>
 
         <footer class="bg-white border-t py-6 mt-auto">
-            <div class="max-w-6xl mx-auto px-4 text-center text-sm text-gray-500">
-                Generado para el viaje a Japón (30 Oct - 21 Nov) · Diseño sin agobios
+            <div class="max-w-6xl mx-auto px-4 text-center text-sm text-gray-500" id="app-footer">
+                Guía de Viaje · Diseño sin agobios
             </div>
         </footer>
 
         <!-- JavaScript Logic -->
-        <script>
-            // --- 1. DATA STRUCTURE ---
-            // Data ha sido movida a data.js para una arquitectura más modular.
+            // --- 1. CONFIG & SUPABASE ---
+            let supabaseClient = null;
+
+            function initAppConfig() {
+                if (!tripConfig) return;
+                
+                // DOM Injection
+                document.title = tripConfig.title + " - Guía de Viaje";
+                document.getElementById('dom-title').textContent = tripConfig.title + " - Guía de Viaje";
+                document.getElementById('app-header-title').textContent = tripConfig.title;
+                document.getElementById('app-header-subtitle').textContent = `${tripConfig.dates} | ${tripConfig.pax}`;
+                document.getElementById('app-footer').textContent = `Guía para ${tripConfig.title} · ${tripConfig.dates}`;
+                
+                // Dashboard dynamic injection
+                document.getElementById('welcome-title').textContent = `¡Hola! Bienvenido a ${tripConfig.title}`;
+                document.getElementById('welcome-subtitle').textContent = `Tu centro de mando para el viaje del ${tripConfig.dates}.`;
+                document.getElementById('dash-dates').textContent = tripConfig.dates;
+                document.getElementById('dash-pax').textContent = tripConfig.pax;
+                
+                // Icon Logic (Japan prefix or default)
+                const iconSpan = document.getElementById('app-icon');
+                if (tripConfig.id.toLowerCase().includes('japon')) {
+                    iconSpan.textContent = '🇯🇵';
+                } else if (tripConfig.id.toLowerCase().includes('italia')) {
+                    iconSpan.textContent = '🇮🇹';
+                } else {
+                    iconSpan.textContent = '✈️';
+                }
+
+                // Dynamic Cities for Hotel Form
+                const citySelect = document.getElementById('h-city');
+                if (citySelect && itineraryData) {
+                    const uniqueCities = [...new Set(itineraryData.map(d => d.location))].sort();
+                    citySelect.innerHTML = uniqueCities.map(c => `<option value="${c}">${c}</option>`).join('') + '<option value="Otra">Otra (Manual)</option>';
+                }
+                
+                // Supabase Init
+                supabaseClient = supabase.createClient(tripConfig.supabaseUrl, tripConfig.supabaseKey);
+            }
 
             // --- 2. LOGIC: Tab Switching ---
             function switchTab(tabId) {
@@ -933,6 +1016,12 @@
                     renderDashboard();
                     setTimeout(renderSummaryMap, 150);
                     window.dashboardRendered = true;
+                }
+
+                // If switching to hotels, fetch initial data
+                if (tabId === 'hoteles' && !window.hotelsRendered) {
+                    fetchHotels();
+                    window.hotelsRendered = true;
                 }
 
                 // If switching to budget, fetch data and chart
@@ -1237,11 +1326,12 @@
                 summaryMap.fitBounds(group.getBounds(), { padding: [30, 30] });
             }
 
-            // --- 6. SUPABASE: Colaborative Budget (Secure) ---
-            // ⚠️ Claves de acceso (Es seguro que sean públicas gracias a nuestra barrera de PIN en la BBDD)
-            const supabaseUrl = 'https://gyjkbzosfukbiyxvfoqu.supabase.co';
-            const supabaseKey = 'sb_publishable_UnOPH2ngXlqvnGQtMqXlKg_d49a0iUh'; 
-            const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+            // --- 6. SUPABASE: Collaborative Budget & Hotels ---
+            
+            // Reutilizamos el sistema de PIN existente
+            function obtenerPin() {
+                return sessionStorage.getItem('trip_pin');
+            }
 
             let budgetChartInstance = null;
 
@@ -1277,10 +1367,11 @@
                 tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-gray-400 font-bold loading-pulse">Cargando la bóveda de datos...</td></tr>';
 
                 try {
-                    // SELECT sigue siendo público (cualquiera puede ver el resumen)
+                    // SELECT sigue siendo público
                     const { data, error } = await supabaseClient
                         .from('presupuesto')
                         .select('*')
+                        .eq('viaje_id', tripConfig.id)
                         .order('created_at', { ascending: false });
 
                     if (error) throw error;
@@ -1372,6 +1463,7 @@
                     // Llamamos a la función protegida en lugar del insert genérico
                     const { error } = await supabaseClient.rpc('save_expense', {
                         pin_input: pin,
+                        p_viaje_id: tripConfig.id,
                         p_nombre: name,
                         p_categoria: cat,
                         p_monto: parseFloat(amt)
@@ -1400,6 +1492,7 @@
                 try {
                     const { error } = await supabaseClient.rpc('toggle_expense_paid', {
                         pin_input: pin,
+                        p_viaje_id: tripConfig.id,
                         p_id: id,
                         p_status: newStatus
                     });
@@ -1422,6 +1515,7 @@
                 try {
                     const { error } = await supabaseClient.rpc('delete_expense', {
                         pin_input: pin,
+                        p_viaje_id: tripConfig.id,
                         p_id: id
                     });
 
@@ -1515,17 +1609,115 @@
                 });
             }
 
-            // --- 6. INITIALIZATION ---
+            // --- 8. LOGIC: Hotels Manager ---
+            async function fetchHotels() {
+                const container = document.getElementById('hotels-container');
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('hoteles')
+                        .select('*')
+                        .eq('viaje_id', tripConfig.id)
+                        .order('check_in', { ascending: true });
+
+                    if (error) throw error;
+                    renderHotelCards(data);
+                } catch (error) {
+                    console.error('Error hotels:', error);
+                    container.innerHTML = '<p class="text-center text-red-400 font-bold py-12 col-span-full">Error al cargar alojamientos.</p>';
+                }
+            }
+
+            function renderHotelCards(list) {
+                const container = document.getElementById('hotels-container');
+                if (!list || list.length === 0) {
+                    container.innerHTML = '<p class="text-center text-gray-400 py-12 col-span-full">No hay hoteles registrados aún.</p>';
+                    return;
+                }
+
+                container.innerHTML = list.map(h => {
+                    const isPaid = h.estado_pago === 'Pagado';
+                    const statusClass = isPaid ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700';
+                    const mapsBtn = h.enlace ? `<a href="${h.enlace}" target="_blank" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase hover:bg-blue-100 transition-colors">📍 Ver Mapa/Booking</a>` : '';
+                    
+                    return `
+                        <div class="bg-white rounded-2xl p-5 shadow-premium border-t-4 ${isPaid ? 'border-green-400' : 'border-orange-400'} flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded ${statusClass}">${h.estado_pago}</span>
+                                    <button onclick="deleteHotel('${h.id}')" class="text-gray-300 hover:text-red-500 transition-colors">🗑️</button>
+                                </div>
+                                <h4 class="font-bold text-gray-900 leading-tight">${h.nombre}</h4>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">${h.ciudad}</p>
+                                <div class="flex items-center text-xs text-gray-500 space-x-2 mb-3">
+                                    <span>📅 ${new Date(h.check_in).toLocaleDateString()} - ${new Date(h.check_out).toLocaleDateString()}</span>
+                                </div>
+                                ${h.notas ? `<p class="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg italic mb-3">"${h.notas}"</p>` : ''}
+                            </div>
+                            <div class="flex justify-between items-center mt-2 pt-3 border-t border-gray-50">
+                                <span class="font-bold text-gray-800">${h.precio} €</span>
+                                ${mapsBtn}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            async function addHotel() {
+                const pin = obtenerPin();
+                if (!pin) { alert("🔐 Caja fuerte bloqueada. Necesitas el PIN para guardar datos."); return; }
+
+                const data = {
+                    p_viaje_id: tripConfig.id,
+                    ciudad_in: document.getElementById('h-city').value,
+                    nombre_in: document.getElementById('h-name').value,
+                    enlace_in: document.getElementById('h-link').value,
+                    check_in_in: document.getElementById('h-checkin').value,
+                    check_out_in: document.getElementById('h-checkout').value,
+                    precio_in: parseFloat(document.getElementById('h-price').value || 0),
+                    estado_pago_in: document.getElementById('h-status').value,
+                    notas_in: document.getElementById('h-notes').value
+                };
+
+                try {
+                    const { error } = await supabaseClient.rpc('gestionar_hotel', { 
+                        operacion: 'INSERT', 
+                        pin_input: pin,
+                        ...data
+                    });
+                    if (error) throw error;
+                    document.getElementById('hotel-form').reset();
+                    fetchHotels();
+                } catch (e) { alert('Error: ' + e.message); }
+            }
+
+            async function deleteHotel(id) {
+                if (!confirm("¿Deseas purgar permanentemente este registro de alojamiento?")) return;
+                const pin = obtenerPin();
+                if (!pin) { alert("🔐 Necesitas el PIN para purgar datos."); return; }
+
+                try {
+                    const { error } = await supabaseClient.rpc('gestionar_hotel', { 
+                        operacion: 'DELETE', 
+                        pin_input: pin,
+                        p_viaje_id: tripConfig.id,
+                        hotel_id: id
+                    });
+                    if (error) throw error;
+                    fetchHotels();
+                } catch (e) { alert('Error: ' + e.message); }
+            }
+
+
+            // --- 9. INITIALIZATION ---
             document.addEventListener('DOMContentLoaded', () => {
+                initAppConfig();
+                
                 renderItineraryList();
                 renderDashboard();
-                setTimeout(renderSummaryMap, 200); // Darle tiempo al layout para expandir el mapa
+                setTimeout(renderSummaryMap, 200);
 
-                // Auto-seleccionar el primer día para que la información se muestre al entrar
                 const firstCard = document.querySelector('.day-card');
-                if (firstCard) {
-                    selectDay(0, firstCard);
-                }
+                if (firstCard) selectDay(0, firstCard);
 
                 window.dashboardRendered = true;
             });
