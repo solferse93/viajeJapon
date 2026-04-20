@@ -346,6 +346,10 @@
                     </h2>
                     <p class="text-gray-500 mt-2 font-medium">Pulsa en cualquier carta para desplegar el mapa mental y
                         tips del día.</p>
+                    <!-- Fila Estilo Calendario -->
+                    <div id="calendar-strip" class="flex overflow-x-auto gap-2 py-4 mt-2 mb-2 scrollbar-hide border-b border-gray-100">
+                        <!-- JavaScript will populate this -->
+                    </div>
                 </div>
 
                 <div class="flex flex-col lg:flex-row gap-6 lg:h-[800px]">
@@ -932,25 +936,34 @@
                 }
 
                 // If switching to budget, fetch data and chart
-                if (tabId === 'presupuesto' && !window.budgetChartRendered) {
-                    fetchBudget();
-                    window.budgetChartRendered = true;
-                }
-
-                // If switching to itinerary and a marker is set, fix map size issues
-                if (tabId === 'itinerario' && window.map) {
-                    setTimeout(() => window.map.invalidateSize(), 150);
-                }
-            }
-
-            // --- 3. LOGIC: Render Itinerary List ---
+                if (tabId === 'presupuesto' && !window.budgetC            // --- 3. LOGIC: Render Itinerary List ---
             function renderItineraryList() {
                 const container = document.getElementById('day-list-container');
                 container.innerHTML = ''; // Clear
+                
+                const calendarStrip = document.getElementById('calendar-strip');
+                if (calendarStrip) calendarStrip.innerHTML = '';
 
                 let currentLocation = '';
 
                 itineraryData.forEach((data, index) => {
+                    const dateText = `${data.day} Nov`;
+
+                    if (calendarStrip) {
+                        const pill = document.createElement('button');
+                        pill.className = 'flex-shrink-0 px-4 py-2 bg-white rounded-full border border-gray-200 text-sm font-bold text-gray-500 hover:text-japan-accent hover:border-japan-accent hover:bg-red-50 transition-all shadow-sm focus:outline-none';
+                        pill.innerText = dateText;
+                        pill.onclick = () => {
+                            const targetId = 'day-card-' + index;
+                            const targetCard = document.getElementById(targetId);
+                            if (targetCard) {
+                                selectDay(index, targetCard);
+                                targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        };
+                        calendarStrip.appendChild(pill);
+                    }
+
                     if (data.location !== currentLocation) {
                         currentLocation = data.location;
                         const divider = document.createElement('div');
@@ -960,6 +973,7 @@
                     }
 
                     const card = document.createElement('div');
+                    card.id = 'day-card-' + index;
                     card.className = 'day-card p-4 border-b lg:border border-gray-100 cursor-pointer lg:hover:bg-gray-50 flex items-center bg-white lg:rounded-xl mb-0 lg:mb-3 shadow-sm lg:shadow-none transition-all';
                     card.onclick = () => selectDay(index, card);
 
@@ -967,10 +981,16 @@
                     <div class="text-3xl md:text-4xl mr-4 filter drop-shadow-sm flex-shrink-0">${data.icon}</div>
                     <div class="flex-grow">
                         <div class="flex justify-between items-start">
-                            <p class="text-[10px] md:text-xs font-bold text-japan-accent uppercase tracking-wider bg-red-50 px-2 py-0.5 rounded-full inline-block">Día ${data.day} · ${data.date}</p>
-                            <span class="text-gray-300 lg:hidden text-sm">❯</span>
+                            <p class="text-[10px] md:text-xs font-bold text-japan-accent uppercase tracking-wider bg-red-50 px-2 py-0.5 rounded-full inline-block">Día ${data.day} • ${dateText}</p>
+                            <span class="text-gray-300 lg:hidden text-sm">➔</span>
                         </div>
                         <h4 class="font-bold text-gray-900 mt-1 md:text-lg leading-tight line-clamp-1">${data.title}</h4>
+                        <p class="text-xs text-gray-500 flex items-center mt-1.5 font-medium"><span class="unicode-icon text-[10px] mr-1 text-japan-text opacity-70">📍</span>${data.location}</p>
+                    </div>
+                `;
+                    container.appendChild(card);
+                });
+            }00 mt-1 md:text-lg leading-tight line-clamp-1">${data.title}</h4>
                         <p class="text-xs text-gray-500 flex items-center mt-1.5 font-medium"><span class="unicode-icon text-[10px] mr-1 text-japan-text opacity-70">📍</span>${data.location}</p>
                     </div>
                 `;
@@ -996,24 +1016,52 @@
                 const data = itineraryData[index];
 
                 // === Setup Leaflet Map ===
-                if (data.lat && data.lng) {
+                const points = [];
+                if (data.route && Array.isArray(data.route)) {
+                    data.route.forEach((step, stepIndex) => {
+                        if (step.lat && typeof step.lat === 'number' && step.lng && typeof step.lng === 'number') {
+                            points.push([step.lat, step.lng, `${stepIndex + 1}. ${step.name}`]);
+                        }
+                    });
+                }
+
+                if (window.dayMarkers && globalLeafletMap) {
+                    window.dayMarkers.forEach(m => globalLeafletMap.removeLayer(m));
+                }
+                window.dayMarkers = [];
+
+                const mapContainer = document.getElementById('map-container');
+                if (points.length > 0) {
+                    mapContainer.style.display = 'block';
+
                     if (!globalLeafletMap) {
-                        globalLeafletMap = L.map('map-container').setView([data.lat, data.lng], 13);
+                        globalLeafletMap = L.map('map-container').setView([points[0][0], points[0][1]], 13);
                         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                             attribution: '&copy; OpenStreetMap',
                             maxZoom: 19
                         }).addTo(globalLeafletMap);
-                        currentMapMarker = L.marker([data.lat, data.lng]).addTo(globalLeafletMap);
-                        window.map = globalLeafletMap; // Export to window for invalidateSize trigger
-                    } else {
-                        globalLeafletMap.setView([data.lat, data.lng], 13);
-                        currentMapMarker.setLatLng([data.lat, data.lng]);
-                        setTimeout(() => globalLeafletMap.invalidateSize(), 50);
+                        window.map = globalLeafletMap;
                     }
+
+                    const bounds = L.latLngBounds();
+                    points.forEach(pt => {
+                        const marker = L.marker([pt[0], pt[1]]).bindPopup(`<b>${pt[2]}</b>`).addTo(globalLeafletMap);
+                        window.dayMarkers.push(marker);
+                        bounds.extend([pt[0], pt[1]]);
+                    });
+
+                    if (points.length > 1) {
+                        globalLeafletMap.fitBounds(bounds, { padding: [30, 30] });
+                    } else {
+                        globalLeafletMap.setView([points[0][0], points[0][1]], 14);
+                    }
+                    setTimeout(() => globalLeafletMap.invalidateSize(), 50);
+                } else {
+                    mapContainer.style.display = 'none';
                 }
 
                 // Populate data
-                document.getElementById('detail-date').textContent = `Día ${data.day} - ${data.date} (${data.location})`;
+                document.getElementById('detail-date').textContent = `Día ${data.day} - ${data.day} Nov (${data.location})`;
                 document.getElementById('detail-title').textContent = data.title;
                 document.getElementById('detail-icon').textContent = data.icon;
                 document.getElementById('detail-description').textContent = data.description;
@@ -1467,6 +1515,13 @@
                 renderItineraryList();
                 renderDashboard();
                 setTimeout(renderSummaryMap, 200); // Darle tiempo al layout para expandir el mapa
+
+                // Auto-seleccionar el primer día para que la información se muestre al entrar
+                const firstCard = document.querySelector('.day-card');
+                if (firstCard) {
+                    selectDay(0, firstCard);
+                }
+
                 window.dashboardRendered = true;
             });
 

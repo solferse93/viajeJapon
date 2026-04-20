@@ -14,6 +14,8 @@ Sigue EXACTAMENTE esta estructura para cada día. No inventes campos nuevos.
         "name": "Nombre de la Actividad/Lugar",
         "time": "Horario aproximado",
         "price": "Precio estimado",
+        "lat": "Latitud en coordenadas del sitio",
+        "lng": "Longitud en coordenadas del sitio",
         "brief_note": "Descripción muy breve (1 línea) para la vista colapsada.",
         "detailed_info": "Toda la información detallada, curiosidades, historia y consejos logísticos extraídos de la guía. Usa etiquetas HTML básicas como <p> y <b> para darle formato a este texto."
       }
