@@ -12,7 +12,7 @@ const itineraryData = [
     {
         "day": 0,
         "date": "31-Oct-2026",
-        "title": "Llegada del Usuario",
+        "title": "Llegada de Sergio y Natalia",
         "icon": "✈️",
         "location": "Tokio",
         "description": "Aterrizaje a última hora de la noche en la capital e inicio del viaje logístico.",
@@ -32,7 +32,7 @@ const itineraryData = [
     {
         "day": 1,
         "date": "01-Nov-2026",
-        "title": "Día Espejo - Solo Usuario: El Tokio Tradicional",
+        "title": "Día Espejo - Solo Sergio y Natalia: El Tokio Tradicional",
         "icon": "⛩️",
         "location": "Tokio",
         "description": "Ruta independiente y relajada de bajo esfuerzo físico diseñada para aclimatar el cuerpo al huso horario de forma cultural.",
@@ -651,7 +651,7 @@ const itineraryData = [
     {
         "day": 18,
         "date": "18-Nov-2026",
-        "title": "Último Día Juntos: Tsukiji y Despedida del Usuario",
+        "title": "Último Día Juntos: Tsukiji y Despedida de Sergio y Natalia",
         "icon": "🍤",
         "location": "Tokio",
         "description": "Cierre grupal enfocado en alta cocina marina callejera y miradores institucionales de gran envergadura visual.",
@@ -675,13 +675,13 @@ const itineraryData = [
                 "detailed_info": "<p>Visita a las torres gemelas del imponente mirador del <b>Ayuntamiento de Tokio</b> (Gobierno Metropolitano) en Shinjuku, capturando las memorables e inmensas vistas panorámicas de despedida de la capital japonesa.</p>"
             },
             {
-                "name": "Traslado Nocturno al Aeropuerto (Usuario)",
+                "name": "Traslado Nocturno al Aeropuerto (Sergio y Natalia)",
                 "time": "Noche",
                 "price": "Variable",
                 "lat": 35.5494,
                 "lng": 139.7798,
-                "brief_note": "Recogida de maletas del hotel, cena final de despedida y salida del usuario a las 01:25 AM.",
-                "detailed_info": "<p><b>Logística de Salida del Usuario:</b> Recogida final de maletas del establecimiento hotelero, celebración de una cena de despedida en grupo y traslado nocturno al aeropuerto para tomar vuestro vuelo programado a las 01:25 AM de la madrugada del 19 de noviembre. Tu hermana regresa de forma segura al hotel para descansar.</p>"
+                "brief_note": "Recogida de maletas del hotel, cena final de despedida y salida de Sergio y Natalia a las 01:25 AM.",
+                "detailed_info": "<p><b>Logística de Salida del Sergio y Natalia:</b> Recogida final de maletas del establecimiento hotelero, celebración de una cena de despedida en grupo y traslado nocturno al aeropuerto para tomar vuestro vuelo programado a las 01:25 AM de la madrugada del 19 de noviembre. Tu hermana regresa de forma segura al hotel para descansar.</p>"
             }
         ],
         "celiac": "En Tsukiji, las brochetas de pescado fresco y vieiras cocinadas al momento a la brasa son seguras si pides de forma estricta que no utilicen salsas ('Tare'), empleando únicamente sal natural en la cocción."
@@ -689,19 +689,18 @@ const itineraryData = [
     {
         "day": 19,
         "date": "19-Nov-2026",
-        "title": "Día Espejo - Solo Hermana: Despedida Relajada de la Capital",
+        "title": "Día Espejo - Solo Esther y Aitor: Despedida Relajada de la Capital",
         "icon": "👜",
         "location": "Tokio",
         "description": "Réplica exacta e individual del itinerario del Día 1. Un trazado pausado y seguro ideal para recorrer de forma autónoma antes de su vuelo nocturno.",
         "route": [
             {
                 "name": "Itinerario Cultural de Ueno, Ameyoko y Yanaka Ginza",
-                "time": "Todo el día",
                 "price": "Gratis",
                 "lat": 35.7141,
                 "lng": 139.7741,
                 "brief_note": "Caminata histórica sin prisas replicando minuciosamente el Día 1.",
-                "detailed_info": "<p><b>Nota:</b> El usuario ya ha volado de madrugada. Tu hermana dispone del día libre completo antes de abordar su vuelo nocturno fijado a las 23:30. Realiza de forma autónoma y exacta el plan pausado del <b>Día 1: Ueno, el mercado bajo las vías de Ameyoko y las casas bajas tradicionales de Yanaka</b>. Al ostentar un fuerte componente cultural y un ritmo pausado de bajo esfuerzo físico, resulta una ruta sumamente segura y fácil de ejecutar en solitario sin ningún tipo de presiones horarias. Traslado nocturno final hacia el aeropuerto para su vuelo de las 23:30.</p>"
+                "detailed_info": "<p><b>Nota:</b> Sergio y Natalia ya ha volado de madrugada. Tu Esther y Aitor dispone del día libre completo antes de abordar su vuelo nocturno fijado a las 23:30. Realiza de forma autónoma y exacta el plan pausado del <b>Día 1: Ueno, el mercado bajo las vías de Ameyoko y las casas bajas tradicionales de Yanaka</b>. Al ostentar un fuerte componente cultural y un ritmo pausado de bajo esfuerzo físico, resulta una ruta sumamente segura y fácil de ejecutar en solitario sin ningún tipo de presiones horarias. Traslado nocturno final hacia el aeropuerto para su vuelo de las 23:30.</p>"
             }
         ],
         "celiac": "En la estación de Ueno existen grandes almacenes alimentarios con etiquetado claro e internacional de alérgenos, facilitando la compra segura de comida para el trayecto de vuelo de vuelta."
