@@ -1,0 +1,146 @@
+/* Custom Styles to avoid SVGs and manage layout */
+body {
+    background-color: #FAF9F6;
+    color: #202124;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Loading animation used by JS modules */
+@keyframes pulse-opacity {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.loading-pulse {
+    animation: pulse-opacity 1.5s ease-in-out infinite;
+}
+
+/* Checkbox size fix (Tailwind w-4.5 does not exist natively) */
+.w-4\.5, input[type='checkbox'].w-4\.5 {
+    width: 1.125rem;
+    height: 1.125rem;
+}
+
+.tab-content {
+    display: none;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+}
+
+.tab-content.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #E0E0E0;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #BDBDBD;
+}
+
+/* Hide scrollbar for mobile tabs navigation */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Glassmorphism Classes */
+.glass-header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Chart Container Requirements */
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 300px;
+    max-height: 400px;
+    padding: 1rem;
+}
+
+@media (min-width: 768px) {
+    .chart-container {
+        height: 350px;
+    }
+}
+
+.day-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 3px solid transparent;
+}
+
+.day-card:hover {
+    transform: translateX(4px) translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-left-color: rgba(211, 47, 47, 0.4);
+}
+
+.day-card.selected {
+    background: linear-gradient(90deg, #FFF9F9 0%, #FFFFFF 100%);
+    border-left: 4px solid #D32F2F;
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.08);
+    transform: translateX(4px);
+}
+
+.unicode-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    margin-right: 0.5rem;
+}
+
+/* Mobile Detail Overlay */
+@media (max-width: 1023px) {
+    .mobile-detail-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        z-index: 100;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow-y: auto;
+    }
+
+    .mobile-detail-overlay.open {
+        transform: translateX(0);
+    }
+
+    .close-btn {
+        display: flex;
+    }
+}
+
+@media (min-width: 1024px) {
+    .close-btn {
+        display: none;
+    }
+}
