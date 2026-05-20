@@ -4,25 +4,36 @@ function initAppConfig() {
 
     // DOM Injection
     document.title = tripConfig.title + " - Guía de Viaje";
-    document.getElementById('dom-title').textContent = tripConfig.title + " - Guía de Viaje";
-    document.getElementById('app-header-title').textContent = tripConfig.title;
-    document.getElementById('app-header-subtitle').textContent = `${tripConfig.dates} | ${tripConfig.pax}`;
-    document.getElementById('app-footer').textContent = `Guía para ${tripConfig.title} · ${tripConfig.dates}`;
+    
+    const domTitle = document.getElementById('dom-title');
+    if (domTitle) domTitle.textContent = tripConfig.title + " - Guía de Viaje";
+    
+    const appHeaderTitle = document.getElementById('app-header-title');
+    if (appHeaderTitle) appHeaderTitle.textContent = tripConfig.title;
+    
+    const appHeaderSubtitle = document.getElementById('app-header-subtitle');
+    if (appHeaderSubtitle) appHeaderSubtitle.textContent = `${tripConfig.dates} | ${tripConfig.pax}`;
+    
+    const appFooter = document.getElementById('app-footer');
+    if (appFooter) appFooter.textContent = `Guía para ${tripConfig.title} · ${tripConfig.dates}`;
 
     // Dashboard dynamic injection
-    document.getElementById('welcome-title').textContent = `¡Hola! Bienvenido a ${tripConfig.title}`;
-    document.getElementById('welcome-subtitle').textContent = `Tu centro de mando para el viaje del ${tripConfig.dates}.`;
-    document.getElementById('dash-dates').textContent = tripConfig.dates;
-    document.getElementById('dash-pax').textContent = tripConfig.pax;
+    const welcomeTitle = document.getElementById('welcome-title');
+    if (welcomeTitle) welcomeTitle.textContent = `Bienvenido a ${tripConfig.title}`;
+    
+    const welcomeSubtitle = document.getElementById('welcome-subtitle');
+    if (welcomeSubtitle) welcomeSubtitle.textContent = "Itinerario interactivo y diario de ruta de los hermanos y cuñados en Japón 🇯🇵";
 
     // Icon Logic (Japan prefix or default)
     const iconSpan = document.getElementById('app-icon');
-    if (tripConfig.id.toLowerCase().includes('japon')) {
-        iconSpan.textContent = '🇯🇵';
-    } else if (tripConfig.id.toLowerCase().includes('italia')) {
-        iconSpan.textContent = '🇮🇹';
-    } else {
-        iconSpan.textContent = '✈️';
+    if (iconSpan) {
+        if (tripConfig.id.toLowerCase().includes('japon')) {
+            iconSpan.textContent = '🇯🇵';
+        } else if (tripConfig.id.toLowerCase().includes('italia')) {
+            iconSpan.textContent = '🇮🇹';
+        } else {
+            iconSpan.textContent = '✈️';
+        }
     }
 
     // Dynamic Cities for Hotel Form
@@ -44,14 +55,30 @@ function initAppConfig() {
         });
     }
 
-    // Supabase Init
-    supabaseClient = supabase.createClient(tripConfig.supabaseUrl, tripConfig.supabaseKey);
+    // Supabase Init with fallback safeguards
+    if (typeof supabase !== 'undefined') {
+        try {
+            supabaseClient = supabase.createClient(tripConfig.supabaseUrl, tripConfig.supabaseKey);
+        } catch (err) {
+            console.error("Error al inicializar el cliente de Supabase:", err);
+        }
+    } else {
+        console.warn("Supabase library not loaded. Cloud features will be disabled.");
+    }
 
     // Fetch Currency rates
-    fetchExchangeRate();
+    try {
+        fetchExchangeRate();
+    } catch (err) {
+        console.error("Error al obtener tipos de cambio:", err);
+    }
 
     // Update online status badge
-    updateOnlineStatus();
+    try {
+        updateOnlineStatus();
+    } catch (err) {
+        console.error("Error al actualizar estado online:", err);
+    }
 }
 
 // --- LOGIC: Tab Switching ---
@@ -84,10 +111,12 @@ function switchTab(tabId) {
     }
 
     // If switching to resume, render map and dashboard data
-    if (tabId === 'resumen' && !window.dashboardRendered) {
-        renderDashboard();
+    if (tabId === 'resumen') {
+        if (!window.dashboardRendered) {
+            renderDashboard();
+            window.dashboardRendered = true;
+        }
         setTimeout(renderSummaryMap, 150);
-        window.dashboardRendered = true;
     }
 
     // If switching to hotels, fetch initial data
@@ -225,28 +254,47 @@ function selectDay(index, cardElement) {
         } else {
             if (mapContainer) mapContainer.style.display = 'block';
 
-            if (!globalLeafletMap) {
-                globalLeafletMap = L.map('map-container').setView([points[0][0], points[0][1]], 13);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; OpenStreetMap',
-                    maxZoom: 19
-                }).addTo(globalLeafletMap);
-                window.map = globalLeafletMap;
-            }
+            try {
+                // Si el contenedor tiene un mapa asociado en el DOM y perdimos la referencia, la recuperamos
+                if (mapContainer._leaflet_id && !globalLeafletMap) {
+                    globalLeafletMap = window.map || null;
+                }
 
-            const bounds = L.latLngBounds();
-            points.forEach(pt => {
-                const marker = L.marker([pt[0], pt[1]]).bindPopup(`<b>${pt[2]}</b>`).addTo(globalLeafletMap);
-                window.dayMarkers.push(marker);
-                bounds.extend([pt[0], pt[1]]);
-            });
+                // Si no hay mapa y no está inicializado en el DOM, lo creamos
+                if (!globalLeafletMap && !mapContainer._leaflet_id) {
+                    globalLeafletMap = L.map('map-container').setView([points[0][0], points[0][1]], 13);
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                        attribution: '&copy; OpenStreetMap',
+                        maxZoom: 19
+                    }).addTo(globalLeafletMap);
+                    window.map = globalLeafletMap;
+                } else if (globalLeafletMap) {
+                    // Si ya existe, lo reseteamos a la vista por defecto temporalmente
+                    globalLeafletMap.setView([points[0][0], points[0][1]], 13);
+                }
 
-            if (points.length > 1) {
-                globalLeafletMap.fitBounds(bounds, { padding: [30, 30] });
-            } else {
-                globalLeafletMap.setView([points[0][0], points[0][1]], 14);
+                if (globalLeafletMap) {
+                    const bounds = L.latLngBounds();
+                    points.forEach(pt => {
+                        const marker = L.marker([pt[0], pt[1]]).bindPopup(`<b>${pt[2]}</b>`).addTo(globalLeafletMap);
+                        window.dayMarkers.push(marker);
+                        bounds.extend([pt[0], pt[1]]);
+                    });
+
+                    if (points.length > 1) {
+                        globalLeafletMap.fitBounds(bounds, { padding: [30, 30] });
+                    } else {
+                        globalLeafletMap.setView([points[0][0], points[0][1]], 14);
+                    }
+                    setTimeout(() => {
+                        try {
+                            globalLeafletMap.invalidateSize();
+                        } catch (e) {}
+                    }, 50);
+                }
+            } catch (err) {
+                console.error("Critical error during Leaflet daily map initialization/update:", err);
             }
-            setTimeout(() => globalLeafletMap.invalidateSize(), 50);
         }
     } else {
         if (mapContainer) mapContainer.style.display = 'none';
@@ -349,6 +397,11 @@ function selectDay(index, cardElement) {
         document.getElementById('day-detail-container').scrollTop = 0;
         if (globalLeafletMap) setTimeout(() => globalLeafletMap.invalidateSize(), 300);
     }
+
+    // Sync notes warning UI status for active day
+    if (typeof updateNotesWarningUI === 'function') {
+        updateNotesWarningUI();
+    }
 }
 
 // Close mobile detail modal overlay
@@ -400,8 +453,6 @@ function renderDashboard() {
 }
 
 function renderSummaryMap() {
-    if (summaryMap) return;
-
     const loader = document.getElementById('map-loader');
     const mapDiv = document.getElementById('summary-map');
     if (!mapDiv) return;
@@ -420,29 +471,64 @@ function renderSummaryMap() {
         return;
     }
 
+    // Si ya existe la instancia global y el contenedor tiene mapa, invalidar tamaño y salir
+    if (summaryMap && mapDiv._leaflet_id) {
+        try {
+            summaryMap.invalidateSize();
+        } catch (e) {
+            console.warn("Error invalidating summary map size:", e);
+        }
+        return;
+    }
+
+    // Si el contenedor tiene un mapa asociado pero perdimos la referencia en JS, la recuperamos o limpiamos
+    if (mapDiv._leaflet_id && !summaryMap) {
+        console.log("Summary map already initialized in DOM. Skipping double init.");
+        return;
+    }
+
     if (loader) loader.style.display = 'none';
 
-    summaryMap = L.map('summary-map', { zoomControl: false });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19
-    }).addTo(summaryMap);
+    try {
+        summaryMap = L.map('summary-map', { zoomControl: false });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19
+        }).addTo(summaryMap);
 
-    const cities = [
-        { name: "Tokio", lat: 35.6762, lng: 139.6503 },
-        { name: "Kioto", lat: 35.0116, lng: 135.7681 },
-        { name: "Osaka", lat: 34.6937, lng: 135.5023 },
-        { name: "Kanazawa", lat: 36.5613, lng: 136.6562 },
-        { name: "Takayama", lat: 36.1461, lng: 137.2523 }
-    ];
+        const markers = [];
+        const bounds = L.latLngBounds();
 
-    const markers = cities.map(c => {
-        const marker = L.marker([c.lat, c.lng]).addTo(summaryMap);
-        marker.bindPopup(`<b>${c.name}</b>`);
-        return marker;
-    });
+        if (itineraryData && Array.isArray(itineraryData)) {
+            itineraryData.forEach(day => {
+                if (day.route && Array.isArray(day.route)) {
+                    // Find the first valid step that has coordinates
+                    const step = day.route.find(s => s.lat && typeof s.lat === 'number' && s.lng && typeof s.lng === 'number');
+                    if (step) {
+                        const dateText = `${day.day} Nov`;
+                        const popupContent = `
+                            <div class="p-1 text-xs">
+                                <p class="font-bold text-japan-accent uppercase tracking-wider text-[10px] mb-0.5">Día ${day.day} · ${dateText}</p>
+                                <h4 class="font-bold text-gray-900 text-sm mb-1 leading-tight">${day.title}</h4>
+                                <p class="text-gray-500 flex items-center font-semibold mt-1"><span class="mr-1">📍</span>${day.location}</p>
+                                <p class="text-gray-600 mt-1 font-medium italic text-[11px]">${step.name}</p>
+                            </div>
+                        `;
+                        const marker = L.marker([step.lat, step.lng])
+                            .bindPopup(popupContent)
+                            .addTo(summaryMap);
+                        markers.push(marker);
+                        bounds.extend([step.lat, step.lng]);
+                    }
+                }
+            });
+        }
 
-    const group = new L.featureGroup(markers);
-    summaryMap.fitBounds(group.getBounds(), { padding: [30, 30] });
+        if (markers.length > 0) {
+            summaryMap.fitBounds(bounds, { padding: [40, 40] });
+        }
+    } catch (err) {
+        console.error("Critical error during Leaflet summary map initialization:", err);
+    }
 }
 
 // --- SMART ITINERARY DATE COMPANION ---
@@ -453,10 +539,10 @@ function addSmartDaySelectionButton() {
 
     let targetIndex = -1;
 
-    // Active Dates for Itinerary: 30 Oct - 21 Nov 2026.
+    // Active Dates for Itinerary: 30 Oct - 19 Nov 2026.
     if (month === 9 && date === 30) {
         targetIndex = itineraryData.findIndex(d => Number(d.day) === 30);
-    } else if (month === 10 && date >= 1 && date <= 21) {
+    } else if (month === 10 && date >= 1 && date <= 19) {
         targetIndex = itineraryData.findIndex(d => Number(d.day) === date);
     }
 
@@ -481,21 +567,45 @@ function addSmartDaySelectionButton() {
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    initAppConfig();
+    try {
+        initAppConfig();
+    } catch (e) {
+        console.error("Error in initAppConfig:", e);
+    }
 
-    renderItineraryList();
+    try {
+        renderItineraryList();
+    } catch (e) {
+        console.error("Error in renderItineraryList:", e);
+    }
 
-    // Activate default tab (resumen) programmatically — this triggers renderDashboard + renderSummaryMap
-    switchTab('resumen');
+    // Activate default tab (itinerario) programmatically — as requested by the user
+    try {
+        switchTab('itinerario');
+    } catch (e) {
+        console.error("Error in switchTab:", e);
+    }
 
     // Auto-select first day in itinerary list
-    const firstCard = document.querySelector('.day-card');
-    if (firstCard) selectDay(0, firstCard);
+    try {
+        const firstCard = document.querySelector('.day-card');
+        if (firstCard) selectDay(0, firstCard);
+    } catch (e) {
+        console.error("Error in selecting first day:", e);
+    }
 
     // Add floating smart trip day helper button
-    addSmartDaySelectionButton();
+    try {
+        addSmartDaySelectionButton();
+    } catch (e) {
+        console.error("Error in adding smart day button:", e);
+    }
 
     // Preload Itinerary Hot Notes and Checklist status from Supabase
-    fetchAllNotes();
+    try {
+        fetchAllNotes();
+    } catch (e) {
+        console.error("Error in fetchAllNotes:", e);
+    }
 });
 

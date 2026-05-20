@@ -1,7 +1,7 @@
 const tripConfig = {
     id: 'japon_2026',
     title: 'Aventura Japonesa',
-    dates: '30 Oct - 21 Nov',
+    dates: '30 Oct - 19 Nov',
     pax: '4 Adultos',
     coverImage: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop', // Imagen de ejemplo (Tokio en otoño)
     supabaseUrl: 'https://gyjkbzosfukbiyxvfoqu.supabase.co',

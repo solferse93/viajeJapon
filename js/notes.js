@@ -18,6 +18,27 @@ async function fetchAllNotes() {
     } catch (e) {
         console.warn("Hot notes cloud download failed. Using local cache:", e);
         window.tripNotes = getCache('trip_notes') || {};
+    } finally {
+        if (typeof updateNotesWarningUI === 'function') {
+            updateNotesWarningUI();
+        }
+    }
+}
+
+function updateNotesWarningUI() {
+    const warning = document.getElementById('detail-notes-warning');
+    const saveBtn = document.getElementById('detail-notes-save-btn');
+    if (!saveBtn) return;
+
+    const pin = obtenerPin();
+    if (pin) {
+        if (warning) warning.classList.add('hidden');
+        saveBtn.className = "bg-japan-accent text-white font-bold text-xs px-4 py-2 rounded-xl shadow-sm hover:bg-red-800 transition-all transform active:scale-95 flex items-center";
+        saveBtn.innerHTML = "<span>Guardar Nota en la Nube ☁️</span>";
+    } else {
+        if (warning) warning.classList.remove('hidden');
+        saveBtn.className = "bg-amber-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-sm hover:bg-amber-600 transition-all transform active:scale-95 flex items-center";
+        saveBtn.innerHTML = "<span>Guardar en Caché Local 💾</span>";
     }
 }
 
@@ -33,14 +54,25 @@ async function saveCurrentDayNote() {
     const noteContent = document.getElementById('detail-notes-text').value;
     const pin = obtenerPin();
 
-    if (!pin) {
-        alert("🔐 Caja fuerte bloqueada. Introduce el PIN de la tripulación (haciendo clic en el candado arriba a la derecha) para guardar en caliente.");
-        return;
-    }
-
     const saveBtn = document.getElementById('detail-notes-save-btn');
     const statusSpan = document.getElementById('detail-notes-status');
     if (!saveBtn || !statusSpan) return;
+
+    // GUARDADO EN CACHÉ LOCAL TEMPORAL SI NO HAY PIN
+    if (!pin) {
+        window.tripNotes[day] = noteContent;
+        setCache('trip_notes', window.tripNotes);
+
+        statusSpan.className = 'text-xs text-amber-600 font-bold';
+        statusSpan.textContent = '💾 Guardado en Caché Local';
+        setTimeout(() => {
+            if (statusSpan.textContent === '💾 Guardado en Caché Local') {
+                statusSpan.textContent = '';
+            }
+        }, 4000);
+        return;
+    }
+
     const originalContent = saveBtn.innerHTML;
 
     saveBtn.disabled = true;

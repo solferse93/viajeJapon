@@ -54,6 +54,9 @@ function updateLockUI() {
     if (!icon) return;
     const savedPin = sessionStorage.getItem('trip_pin');
     icon.innerText = savedPin ? '🔓' : '🔒';
+    if (typeof updateNotesWarningUI === 'function') {
+        updateNotesWarningUI();
+    }
 }
 
 function promptPin() {
@@ -63,18 +66,16 @@ function promptPin() {
             sessionStorage.removeItem('trip_pin');
             updateLockUI();
             alert("Caja fuerte cerrada. Tu navegador ya no enviará el PIN.");
-            // Re-fetch checklist and notes to update lock messages
             if (window.checklistRendered) fetchChecklist();
         }
         return;
     }
 
-    const code = prompt("Introduce el PIN secreto pactado por la tripulación:");
+    const code = prompt("Introduce el PIN secreto del viaje:");
     if (code) {
         sessionStorage.setItem('trip_pin', code);
         updateLockUI();
-        alert("PIN guardado temporalmente en este navegador. Ya puedes realizar transferencias y anotaciones.");
-        // Re-fetch checklist and notes to update lock messages
+        alert("PIN guardado temporalmente en este navegador. Ya puedes realizar cambios y anotaciones.");
         if (window.checklistRendered) fetchChecklist();
     }
 }
