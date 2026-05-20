@@ -58,138 +58,7 @@
         }
     </script>
 
-    <style>
-        /* Custom Styles to avoid SVGs and manage layout */
-        body {
-            background-color: #FAF9F6;
-            color: #202124;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        .tab-content {
-            display: none;
-            opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-        }
-
-        .tab-content.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Premium Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 4px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #E0E0E0;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #BDBDBD;
-        }
-
-        /* Hide scrollbar for mobile tabs navigation */
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* Glassmorphism Classes */
-        .glass-header {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        /* Chart Container Requirements */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-
-        .day-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 3px solid transparent;
-        }
-
-        .day-card:hover {
-            transform: translateX(4px) translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border-left-color: rgba(211, 47, 47, 0.4);
-        }
-
-        .day-card.selected {
-            background: linear-gradient(90deg, #FFF9F9 0%, #FFFFFF 100%);
-            border-left: 4px solid #D32F2F;
-            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.08);
-            transform: translateX(4px);
-        }
-
-        .unicode-icon {
-            font-size: 1.25rem;
-            line-height: 1;
-            margin-right: 0.5rem;
-        }
-
-        /* Mobile Detail Overlay */
-        @media (max-width: 1023px) {
-            .mobile-detail-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: white;
-                z-index: 100;
-                transform: translateX(100%);
-                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-                overflow-y: auto;
-            }
-
-            .mobile-detail-overlay.open {
-                transform: translateX(0);
-            }
-
-            .close-btn {
-                display: flex;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .close-btn {
-                display: none;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 
     <!-- Required Placeholders -->
     <!-- Chosen Palette: Zen Warmth (Warm off-white background, Matcha green accents, Torii Red highlights, Dark Slate text) -->
@@ -216,8 +85,11 @@
                 <div class="flex items-center w-full md:w-auto mb-4 md:mb-0 justify-center md:justify-start">
                     <span id="app-icon" class="text-4xl mr-3 filter drop-shadow-sm">✈️</span>
                     <div>
-                        <h1 id="app-header-title" class="text-2xl md:text-3xl font-bold text-japan-text font-serif tracking-tight">Cargando...</h1>
-                        <p id="app-header-subtitle" class="text-xs md:text-sm text-gray-500 font-medium mt-0.5">Fecha | Integrantes | Estilo</p>
+                        <h1 id="app-header-title"
+                            class="text-2xl md:text-3xl font-bold text-japan-text font-serif tracking-tight">Cargando...
+                        </h1>
+                        <p id="app-header-subtitle" class="text-xs md:text-sm text-gray-500 font-medium mt-0.5">Fecha |
+                            Integrantes | Estilo</p>
                     </div>
                 </div>
 
@@ -250,41 +122,73 @@
                 </nav>
             </div>
         </div>
+    </header>
 
-
-        <!-- Main Content Area -->
-        <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
 
             <!-- ==================== TAB: RESUMEN (DASHBOARD) ==================== -->
             <section id="resumen" class="tab-content active">
                 <div class="mb-8">
-                    <h2 id="welcome-title" class="text-4xl md:text-5xl font-serif font-bold text-japan-text tracking-tight">Cargando... <span class="inline-block animate-bounce text-3xl md:text-4xl">👋</span></h2>
-                    <p id="welcome-subtitle" class="text-xl text-gray-600 leading-relaxed mt-4">Cargando información del viaje...</p>
+                    <h2 id="welcome-title"
+                        class="text-4xl md:text-5xl font-serif font-bold text-japan-text tracking-tight">Cargando...
+                        <span class="inline-block animate-bounce text-3xl md:text-4xl">👋</span>
+                    </h2>
+                    <p id="welcome-subtitle" class="text-xl text-gray-600 leading-relaxed mt-4">Cargando información del
+                        viaje...</p>
                 </div>
 
                 <!-- Fila Superior (Widgets rápidos) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <!-- Tarjeta 1: Fechas y Progreso -->
                     <div
                         class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent flex flex-col justify-center relative overflow-hidden">
                         <div class="absolute right-0 top-0 opacity-5 text-8xl -mr-4 -mt-4">🗺️</div>
                         <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400 flex items-center mb-2">
-                            <span class="text-xl mr-2">🗓️</span> Estadísticas del Viaje</h3>
+                            <span class="text-xl mr-2">🗓️</span> Estadísticas del Viaje
+                        </h3>
                         <p id="dash-dates" class="text-3xl font-bold text-gray-800">Cargando...</p>
                         <div class="mt-4 flex items-center">
-                            <span id="dash-status" class="bg-red-50 text-japan-accent text-sm font-bold px-3 py-1 rounded-full">Activo</span>
-                            <span id="dash-pax" class="ml-3 text-sm text-gray-500 font-medium border-l border-gray-200 pl-3">Invitados</span>
+                            <span id="dash-status"
+                                class="bg-red-50 text-japan-accent text-sm font-bold px-3 py-1 rounded-full">Activo</span>
+                            <span id="dash-pax"
+                                class="ml-3 text-sm text-gray-500 font-medium border-l border-gray-200 pl-3">Invitados</span>
                         </div>
                     </div>
 
                     <!-- Tarjeta 2: Distribución de Pernoctaciones -->
                     <div class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-matcha">
                         <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400 flex items-center mb-4">
-                            <span class="text-xl mr-2">🏨</span> Bases de Alojamiento</h3>
+                            <span class="text-xl mr-2">🏨</span> Bases de Alojamiento
+                        </h3>
                         <div id="nights-distribution"
                             class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-center">
                             <!-- Injected by JS -->
                         </div>
+                    </div>
+
+                    <!-- Tarjeta 3: Conversor de Divisas -->
+                    <div
+                        class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent flex flex-col justify-between">
+                        <h3 class="text-sm uppercase tracking-wider font-bold text-gray-400 flex items-center mb-4">
+                            <span class="text-xl mr-2">💴</span> Conversor JPY ➔ EUR
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5">
+                                <span class="text-gray-400 font-bold mr-2 text-sm">¥</span>
+                                <input type="number" id="conv-jpy"
+                                    class="bg-transparent w-full text-sm font-bold text-gray-800 focus:outline-none"
+                                    placeholder="Yenes (JPY)" oninput="convertJPYtoEUR(this.value)">
+                            </div>
+                            <div class="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5">
+                                <span class="text-gray-400 font-bold mr-2 text-sm">€</span>
+                                <input type="number" id="conv-eur"
+                                    class="bg-transparent w-full text-sm font-bold text-gray-800 focus:outline-none"
+                                    placeholder="Euros (EUR)" oninput="convertEURtoJPY(this.value)">
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-3"
+                            id="exchange-rate-text">Cargando cambio...</p>
                     </div>
                 </div>
 
@@ -297,6 +201,11 @@
                                 class="text-2xl mr-2">🗺️</span> Ruta Estratégica Nacional</h3>
                         <div id="summary-map"
                             class="w-full h-80 rounded-xl border border-gray-200 z-0 flex-grow relative bg-gray-100 shadow-inner">
+                            <!-- GPS Locate Button -->
+                            <button onclick="locateOnSummaryMap(event)" title="Mi ubicación actual"
+                                class="absolute bottom-4 right-4 bg-white hover:bg-gray-50 border border-gray-200 shadow-md text-gray-700 w-10 h-10 rounded-full flex items-center justify-center font-bold z-[10] hover:scale-105 active:scale-95 transition-all">
+                                🧭
+                            </button>
                             <!-- Placeholder visual mientra carga Leaflet -->
                             <div class="absolute inset-0 flex items-center justify-center text-gray-400 font-bold"
                                 id="map-loader">
@@ -341,7 +250,8 @@
                     <p class="text-gray-500 mt-2 font-medium">Pulsa en cualquier carta para desplegar el mapa mental y
                         tips del día.</p>
                     <!-- Fila Estilo Calendario -->
-                    <div id="calendar-strip" class="flex overflow-x-auto gap-2 py-4 mt-2 mb-2 scrollbar-hide border-b border-gray-100">
+                    <div id="calendar-strip"
+                        class="flex overflow-x-auto gap-2 py-4 mt-2 mb-2 scrollbar-hide border-b border-gray-100">
                         <!-- JavaScript will populate this -->
                     </div>
                 </div>
@@ -375,6 +285,11 @@
                             <!-- Mapa Leaflet (Visual on mobile / Desktop top) -->
                             <div id="map-container"
                                 class="w-full h-56 md:h-64 bg-gray-100 border border-gray-200 rounded-2xl mb-8 relative z-0 overflow-hidden shadow-sm lg:order-first">
+                                <!-- GPS Locate Button -->
+                                <button onclick="locateOnDayMap(event)" title="Mi ubicación actual"
+                                    class="absolute bottom-4 right-4 bg-white hover:bg-gray-50 border border-gray-200 shadow-md text-gray-700 w-10 h-10 rounded-full flex items-center justify-center font-bold z-[10] hover:scale-105 active:scale-95 transition-all">
+                                    🧭
+                                </button>
                             </div>
 
                             <div class="lg:order-last w-full">
@@ -409,6 +324,26 @@
                                         Consejo específico.</p>
                                 </div>
 
+                                <!-- Diario / Notas Diarias en Caliente -->
+                                <div class="mt-8 bg-white border border-gray-100 rounded-2xl p-6 shadow-premium relative overflow-hidden"
+                                    id="detail-notes-container">
+                                    <div class="absolute top-0 right-0 p-4 opacity-5 text-7xl">📝</div>
+                                    <h4 class="font-bold text-gray-800 flex items-center mb-3 text-lg"><span
+                                            class="mr-2">📝</span> Anotaciones en Caliente</h4>
+                                    <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">Cuaderno de
+                                        bitácora compartido por la tripulación</p>
+                                    <textarea id="detail-notes-text" rows="3"
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-japan-accent/60 transition-colors font-medium text-gray-700 text-sm"
+                                        placeholder="Escribe aquí notas rápidas, cambios de planes o descubrimientos para hoy..."></textarea>
+                                    <div class="flex justify-between items-center mt-3">
+                                        <span id="detail-notes-status" class="text-xs font-bold"></span>
+                                        <button onclick="saveCurrentDayNote()" id="detail-notes-save-btn"
+                                            class="bg-japan-accent text-white font-bold text-xs px-4 py-2 rounded-xl shadow-sm hover:bg-red-800 transition-all transform active:scale-95 flex items-center">
+                                            <span>Guardar Nota</span>
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <!-- Contenedores para Hotel y Restaurantes dinámicos -->
                                 <div id="detail-hotel-container" class="mt-8"></div>
                                 <div id="detail-restaurants-container" class="mt-8 mb-8"></div>
@@ -421,123 +356,30 @@
 
             <!-- ==================== TAB: PREPARATIVOS ==================== -->
             <section id="preparativos" class="tab-content">
-                <div class="mb-10 text-center md:text-left">
-                    <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight">Checklist de Despegue
-                        ✈️</h2>
-                    <p class="text-gray-500 font-medium">Marcad estas casillas. ¡Una buena planificación es el secreto
-                        de un viaje sin agobios!</p>
-                </div>
+                <div class="mb-6 px-2">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-japan-text tracking-tight">Preparativos de
+                        Viaje 🎒</h2>
+                    <p class="text-gray-500 mt-2 font-medium">Lista de equipaje y tareas compartida por la tripulación.
+                        Los cambios se sincronizan en tiempo real.</p>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Tareas Burocraticas -->
-                    <div class="bg-white rounded-2xl shadow-premium p-6 md:p-8 border border-gray-100">
-                        <h3 class="text-2xl font-bold font-serif mb-6 flex items-center text-gray-800"><span
-                                class="text-3xl mr-3">📱</span> Burocracia & Apps</h3>
-                        <ul class="space-y-4">
-                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
-                                onclick="this.querySelector('input').click()">
-                                <div class="pt-1"><input type="checkbox"
-                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
-                                        onclick="event.stopPropagation()"></div>
-                                <div class="ml-4">
-                                    <p
-                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
-                                        Visit Japan Web</p>
-                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Rellenar online aduanas e
-                                        inmigración. Genera códigos QR para pasar el aeropuerto por vía rápida.</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
-                                onclick="this.querySelector('input').click()">
-                                <div class="pt-1"><input type="checkbox"
-                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
-                                        onclick="event.stopPropagation()"></div>
-                                <div class="ml-4">
-                                    <p
-                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
-                                        Comprar JR Pass / Tickets</p>
-                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Ya que se subió de precio,
-                                        valoradlo bien. Comprad en la web oficial para poder reservar asientos.</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
-                                onclick="this.querySelector('input').click()">
-                                <div class="pt-1"><input type="checkbox"
-                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
-                                        onclick="event.stopPropagation()"></div>
-                                <div class="ml-4">
-                                    <p
-                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
-                                        Internet: eSIM Local</p>
-                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Descargar Ubigi o Holafly e
-                                        instalar antes de volar para tener red nada más aterrizar.</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
-                                onclick="this.querySelector('input').click()">
-                                <div class="pt-1"><input type="checkbox"
-                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
-                                        onclick="event.stopPropagation()"></div>
-                                <div class="ml-4">
-                                    <p
-                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
-                                        Reservas Críticas (Klook)</p>
-                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Shibuya Sky (al atardecer) y
-                                        teamLab Borderless (meses de antelación).</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Equipaje y Dinero -->
-                    <div class="bg-white rounded-2xl shadow-premium p-6 md:p-8 border border-gray-100">
-                        <h3 class="text-2xl font-bold font-serif mb-6 flex items-center text-gray-800"><span
-                                class="text-3xl mr-3">💴</span> Logística Física</h3>
-                        <ul class="space-y-4">
-                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
-                                onclick="this.querySelector('input').click()">
-                                <div class="pt-1"><input type="checkbox"
-                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
-                                        onclick="event.stopPropagation()"></div>
-                                <div class="ml-4">
-                                    <p
-                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
-                                        Tarjetas Revolut/N26</p>
-                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Cambio sin comisiones.
-                                        Imprescindible sacar Yenes en efectivo en Konbinis (ej. 7-Eleven).</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
-                                onclick="this.querySelector('input').click()">
-                                <div class="pt-1"><input type="checkbox"
-                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
-                                        onclick="event.stopPropagation()"></div>
-                                <div class="ml-4">
-                                    <p
-                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
-                                        Seguro Médico a todo Riesgo</p>
-                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Crucial. La sanidad nipona es
-                                        cara. Confirmad que cubren urgencias por celiaquía.</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors cursor-pointer group"
-                                onclick="this.querySelector('input').click()">
-                                <div class="pt-1"><input type="checkbox"
-                                        class="w-6 h-6 border-gray-300 text-japan-accent rounded focus:ring-japan-accent cursor-pointer accent-japan-accent"
-                                        onclick="event.stopPropagation()"></div>
-                                <div class="ml-4">
-                                    <p
-                                        class="font-bold text-gray-900 group-hover:text-japan-accent transition-colors text-lg">
-                                        Enchufes y PowerBanks</p>
-                                    <p class="text-sm text-gray-500 mt-1 leading-snug">Pin plano tipo A. Llevad baterías
-                                        grandes, allí usaréis mapa GPS todo el tiempo.</p>
-                                </div>
-                            </li>
-                        </ul>
+                    <!-- Progreso del Checklist -->
+                    <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-premium mt-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-bold text-gray-700">Progreso General del Equipaje</span>
+                            <span id="checklist-progress-pct" class="text-sm font-bold text-japan-accent">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-100 h-3.5 rounded-full overflow-hidden">
+                            <div id="checklist-progress-bar"
+                                class="bg-gradient-to-r from-japan-accent to-red-600 h-full w-[0%] transition-all duration-500">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-
+                <!-- Grid de Categorías de Checklist -->
+                <div id="checklist-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-2 pb-24">
+                    <!-- Dinámicamente cargado por JS -->
+                </div>
             </section>
 
             <!-- ==================== TAB: GUIA CELIAQUIA ==================== -->
@@ -773,57 +615,91 @@
             <!-- ==================== TAB: HOTELES ==================== -->
             <section id="hoteles" class="tab-content">
                 <div class="mb-10 text-center md:text-left">
-                    <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight">Gestión de Alojamientos 🏨</h2>
+                    <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight">Gestión de
+                        Alojamientos 🏨</h2>
                     <p class="text-gray-500 font-medium">Bases de alojamiento y enlaces a mapas.</p>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Formulario Hotel -->
                     <div class="bg-white rounded-2xl shadow-premium p-6 border-t-4 border-japan-accent self-start">
-                        <h3 class="text-xl font-bold font-serif mb-6 flex items-center"><span class="text-2xl mr-2 text-gray-300">➕</span> Nuevo Hotel</h3>
+                        <h3 class="text-xl font-bold font-serif mb-6 flex items-center"><span
+                                class="text-2xl mr-2 text-gray-300">➕</span> Nuevo Hotel</h3>
                         <form id="hotel-form" onsubmit="event.preventDefault(); addHotel();" class="space-y-4">
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Ciudad</label>
-                                <select id="h-city" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 bg-gray-50 text-sm font-medium">
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Ciudad</label>
+                                <select id="h-city"
+                                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 bg-gray-50 text-sm font-medium">
                                     <!-- Populated dynamically by JS -->
                                 </select>
+                                <div id="h-city-manual-container" class="hidden mt-2 transition-all duration-300">
+                                    <label
+                                        class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Escribe
+                                        la Ciudad</label>
+                                    <input type="text" id="h-city-manual"
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm"
+                                        placeholder="Ej: Miyajima">
+                                </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Nombre del Hotel</label>
-                                <input type="text" id="h-name" required class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm" placeholder="Ej: Keio Plaza Hotel">
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Nombre
+                                    del Hotel</label>
+                                <input type="text" id="h-name" required
+                                    class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm"
+                                    placeholder="Ej: Keio Plaza Hotel">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Enlace Maps/Booking</label>
-                                <input type="url" id="h-link" class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm" placeholder="https://...">
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Enlace
+                                    Maps/Booking</label>
+                                <input type="url" id="h-link"
+                                    class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm"
+                                    placeholder="https://...">
                             </div>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Check-in</label>
-                                    <input type="date" id="h-checkin" required class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm">
+                                    <label
+                                        class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Check-in</label>
+                                    <input type="date" id="h-checkin" required
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Check-out</label>
-                                    <input type="date" id="h-checkout" required class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm">
+                                    <label
+                                        class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Check-out</label>
+                                    <input type="date" id="h-checkout" required
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm">
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Precio</label>
-                                    <input type="number" id="h-price" min="0" step="0.01" class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm" placeholder="Ej: 450">
+                                    <label
+                                        class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Precio</label>
+                                    <input type="number" id="h-price" min="0" step="0.01"
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm"
+                                        placeholder="Ej: 450">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Estado</label>
-                                    <select id="h-status" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 bg-gray-50 text-sm font-medium">
+                                    <label
+                                        class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Estado</label>
+                                    <select id="h-status"
+                                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 bg-gray-50 text-sm font-medium">
                                         <option value="Pagado">✅ Pagado</option>
                                         <option value="Pago en Destino">⏱️ Pago en Destino</option>
                                     </select>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Notas</label>
-                                <textarea id="h-notes" rows="2" class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm" placeholder="Indicaciones extra..."></textarea>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Notas</label>
+                                <textarea id="h-notes" rows="2"
+                                    class="w-full border border-gray-200 rounded-xl px-4 py-2 bg-gray-50 text-sm"
+                                    placeholder="Indicaciones extra..."></textarea>
                             </div>
-                            <button type="submit" class="w-full bg-japan-accent text-white font-bold py-3 rounded-xl shadow-md hover:bg-red-800 transition-all transform active:scale-95">Guardar Hotel</button>
+                            <button type="submit"
+                                class="w-full bg-japan-accent text-white font-bold py-3 rounded-xl shadow-md hover:bg-red-800 transition-all transform active:scale-95">Guardar
+                                Hotel</button>
                         </form>
                     </div>
 
@@ -831,7 +707,8 @@
                     <div class="lg:col-span-2">
                         <div id="hotels-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Cards mapped by JS -->
-                            <p class="text-center text-gray-400 py-12 col-span-full">Cargando registros de alojamiento...</p>
+                            <p class="text-center text-gray-400 py-12 col-span-full">Cargando registros de
+                                alojamiento...</p>
                         </div>
                     </div>
                 </div>
@@ -843,7 +720,8 @@
                     class="mb-10 flex flex-col md:flex-row justify-between items-center text-center md:text-left border-b border-gray-200 pb-6">
                     <div>
                         <h2 class="text-4xl font-serif font-bold text-japan-text mb-3 tracking-tight flex items-center">
-                            <span class="text-japan-accent mr-3">💰</span> Presupuesto de Tripulación</h2>
+                            <span class="text-japan-accent mr-3">💰</span> Presupuesto de Tripulación
+                        </h2>
                         <p class="text-gray-500 font-medium tracking-tight">Sincronizado en tiempo real a la nube.
                             Añadid gastos para calcular el balance.</p>
                     </div>
@@ -894,6 +772,50 @@
                                     class="w-full border border-gray-200 shadow-sm rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-japan-accent/60 transition-colors font-medium text-gray-800"
                                     placeholder="Ej: 145.50">
                             </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Quién
+                                    Pagó</label>
+                                <select id="b-paid-by" required
+                                    class="w-full border border-gray-200 shadow-sm rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-japan-accent/60 transition-colors font-medium text-gray-800">
+                                    <option value="Sergio">Sergio 🥷</option>
+                                    <option value="Natalia">Natalia 🥋</option>
+                                    <option value="Aitor">Aitor 🍣</option>
+                                    <option value="Esther">Esther 🌸</option>
+                                    <option value="Cada uno lo suyo">Cada uno lo suyo (Sin deudas) 👥</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Asumido
+                                    por (Participantes)</label>
+                                <div class="grid grid-cols-2 gap-2" id="b-assumed-by-container">
+                                    <label
+                                        class="flex items-center space-x-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 cursor-pointer hover:bg-gray-100 transition-colors">
+                                        <input type="checkbox" value="Sergio" checked
+                                            class="rounded text-japan-accent focus:ring-japan-accent/60 w-4 h-4">
+                                        <span class="text-xs font-bold text-gray-700">Sergio 🥷</span>
+                                    </label>
+                                    <label
+                                        class="flex items-center space-x-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 cursor-pointer hover:bg-gray-100 transition-colors">
+                                        <input type="checkbox" value="Natalia" checked
+                                            class="rounded text-japan-accent focus:ring-japan-accent/60 w-4 h-4">
+                                        <span class="text-xs font-bold text-gray-700">Natalia 🥋</span>
+                                    </label>
+                                    <label
+                                        class="flex items-center space-x-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 cursor-pointer hover:bg-gray-100 transition-colors">
+                                        <input type="checkbox" value="Aitor" checked
+                                            class="rounded text-japan-accent focus:ring-japan-accent/60 w-4 h-4">
+                                        <span class="text-xs font-bold text-gray-700">Aitor 🍣</span>
+                                    </label>
+                                    <label
+                                        class="flex items-center space-x-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 cursor-pointer hover:bg-gray-100 transition-colors">
+                                        <input type="checkbox" value="Esther" checked
+                                            class="rounded text-japan-accent focus:ring-japan-accent/60 w-4 h-4">
+                                        <span class="text-xs font-bold text-gray-700">Esther 🌸</span>
+                                    </label>
+                                </div>
+                            </div>
                             <button type="submit" id="b-submit-btn"
                                 class="w-full bg-japan-accent text-white font-bold py-3.5 rounded-xl shadow-md hover:bg-red-800 hover:shadow-lg transition-all flex items-center justify-center transform active:scale-95 mt-4">
                                 Ingresar al Tesoro
@@ -908,6 +830,55 @@
                             class="bg-white rounded-2xl shadow-premium p-6 border border-gray-100 flex flex-col justify-center">
                             <div class="chart-container" style="max-height: 250px; height: 250px;">
                                 <canvas id="budgetChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Panel de Cuentas de la Tripulación (Quién debe a quién) -->
+                        <div class="bg-white rounded-2xl shadow-premium border border-gray-100 overflow-hidden">
+                            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50">
+                                <h3 class="text-xl font-bold font-serif text-gray-800 flex items-center">
+                                    <span class="mr-2 text-2xl">👥</span> Cuentas de la Tripulación
+                                </h3>
+                                <span
+                                    class="bg-japan-accent/10 text-japan-accent text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                                    Reparto Flexible 👥
+                                </span>
+                            </div>
+                            <div class="p-6 space-y-6">
+                                <!-- Gasto Total Consolidado -->
+                                <div
+                                    class="bg-gray-50/80 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left border border-gray-100">
+                                    <div>
+                                        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider"
+                                            id="cuota-title-label">Fondo Consolidado Colectivo</p>
+                                        <p class="text-2xl font-bold text-japan-accent" id="cuota-individual-text">0.00
+                                            €</p>
+                                    </div>
+                                    <div class="text-xs text-gray-500 font-medium max-w-sm">
+                                        Los gastos se dividen entre los participantes seleccionados. El modo <b>"Cada
+                                            uno lo suyo"</b> registra vuelos o compras individuales sin generar deudas.
+                                    </div>
+                                </div>
+
+                                <!-- Saldos individuales -->
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Saldos de
+                                        los Viajeros</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="crew-balances-container">
+                                        <!-- Injected by JS -->
+                                    </div>
+                                </div>
+
+                                <!-- Liquidación de cuentas -->
+                                <div class="border-t border-gray-100 pt-5">
+                                    <h4 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Plan de
+                                        Liquidación (Sin Agobios)</h4>
+                                    <div class="bg-red-50/20 rounded-2xl p-4 border border-red-100/50">
+                                        <div id="debts-list-container" class="space-y-3.5">
+                                            <!-- Injected by JS -->
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -954,776 +925,15 @@
         </footer>
 
         <!-- JavaScript Logic -->
-        <script>
-            // --- 1. CONFIG & SUPABASE ---
-            let supabaseClient = null;
-
-            function initAppConfig() {
-                if (!tripConfig) return;
-                
-                // DOM Injection
-                document.title = tripConfig.title + " - Guía de Viaje";
-                document.getElementById('dom-title').textContent = tripConfig.title + " - Guía de Viaje";
-                document.getElementById('app-header-title').textContent = tripConfig.title;
-                document.getElementById('app-header-subtitle').textContent = `${tripConfig.dates} | ${tripConfig.pax}`;
-                document.getElementById('app-footer').textContent = `Guía para ${tripConfig.title} · ${tripConfig.dates}`;
-                
-                // Dashboard dynamic injection
-                document.getElementById('welcome-title').textContent = `¡Hola! Bienvenido a ${tripConfig.title}`;
-                document.getElementById('welcome-subtitle').textContent = `Tu centro de mando para el viaje del ${tripConfig.dates}.`;
-                document.getElementById('dash-dates').textContent = tripConfig.dates;
-                document.getElementById('dash-pax').textContent = tripConfig.pax;
-                
-                // Icon Logic (Japan prefix or default)
-                const iconSpan = document.getElementById('app-icon');
-                if (tripConfig.id.toLowerCase().includes('japon')) {
-                    iconSpan.textContent = '🇯🇵';
-                } else if (tripConfig.id.toLowerCase().includes('italia')) {
-                    iconSpan.textContent = '🇮🇹';
-                } else {
-                    iconSpan.textContent = '✈️';
-                }
-
-                // Dynamic Cities for Hotel Form
-                const citySelect = document.getElementById('h-city');
-                if (citySelect && itineraryData) {
-                    const uniqueCities = [...new Set(itineraryData.map(d => d.location))].sort();
-                    citySelect.innerHTML = uniqueCities.map(c => `<option value="${c}">${c}</option>`).join('') + '<option value="Otra">Otra (Manual)</option>';
-                }
-                
-                // Supabase Init
-                supabaseClient = supabase.createClient(tripConfig.supabaseUrl, tripConfig.supabaseKey);
-            }
-
-            // --- 2. LOGIC: Tab Switching ---
-            function switchTab(tabId) {
-                // Update buttons
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('bg-white', 'shadow', 'text-japan-accent');
-                    btn.classList.add('text-gray-600', 'hover:text-japan-text');
-                });
-                const activeBtn = document.getElementById(`btn-${tabId}`);
-                activeBtn.classList.remove('text-gray-600', 'hover:text-japan-text');
-                activeBtn.classList.add('bg-white', 'shadow', 'text-japan-accent');
-
-                // Update content
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                document.getElementById(tabId).classList.add('active');
-
-                // If switching to resume, render map and dashboard data
-                if (tabId === 'resumen' && !window.dashboardRendered) {
-                    renderDashboard();
-                    setTimeout(renderSummaryMap, 150);
-                    window.dashboardRendered = true;
-                }
-
-                // If switching to hotels, fetch initial data
-                if (tabId === 'hoteles' && !window.hotelsRendered) {
-                    fetchHotels();
-                    window.hotelsRendered = true;
-                }
-
-                // If switching to budget, fetch data and chart
-                if (tabId === 'presupuesto' && !window.budgetChartRendered) {
-                    fetchBudget();
-                    window.budgetChartRendered = true;
-                }
-
-                // If switching to itinerary and a marker is set, fix map size issues
-                if (tabId === 'itinerario' && window.map) {
-                    setTimeout(() => window.map.invalidateSize(), 150);
-                }
-            }
-
-            // --- 3. LOGIC: Render Itinerary List ---
-            function renderItineraryList() {
-                const container = document.getElementById('day-list-container');
-                container.innerHTML = ''; // Clear
-                
-                const calendarStrip = document.getElementById('calendar-strip');
-                if (calendarStrip) calendarStrip.innerHTML = '';
-
-                let currentLocation = '';
-
-                itineraryData.forEach((data, index) => {
-                    const dateText = `${data.day} Nov`;
-
-                    if (calendarStrip) {
-                        const pill = document.createElement('button');
-                        pill.className = 'flex-shrink-0 px-4 py-2 bg-white rounded-full border border-gray-200 text-sm font-bold text-gray-500 hover:text-japan-accent hover:border-japan-accent hover:bg-red-50 transition-all shadow-sm focus:outline-none';
-                        pill.innerText = dateText;
-                        pill.onclick = () => {
-                            const targetId = 'day-card-' + index;
-                            const targetCard = document.getElementById(targetId);
-                            if (targetCard) {
-                                selectDay(index, targetCard);
-                                targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            }
-                        };
-                        calendarStrip.appendChild(pill);
-                    }
-
-                    if (data.location !== currentLocation) {
-                        currentLocation = data.location;
-                        const divider = document.createElement('div');
-                        divider.className = 'bg-gray-100/90 text-gray-800 font-bold px-4 py-2.5 rounded-xl mt-6 mb-2 text-sm uppercase tracking-wider flex items-center shadow-sm border border-gray-200';
-                        divider.innerHTML = `<span class="mr-2 text-lg">📍</span> ${currentLocation}`;
-                        container.appendChild(divider);
-                    }
-
-                    const card = document.createElement('div');
-                    card.id = 'day-card-' + index;
-                    card.className = 'day-card p-4 border-b lg:border border-gray-100 cursor-pointer lg:hover:bg-gray-50 flex items-center bg-white lg:rounded-xl mb-0 lg:mb-3 shadow-sm lg:shadow-none transition-all';
-                    card.onclick = () => selectDay(index, card);
-
-                    card.innerHTML = `
-                    <div class="text-3xl md:text-4xl mr-4 filter drop-shadow-sm flex-shrink-0">${data.icon}</div>
-                    <div class="flex-grow">
-                        <div class="flex justify-between items-start">
-                            <p class="text-[10px] md:text-xs font-bold text-japan-accent uppercase tracking-wider bg-red-50 px-2 py-0.5 rounded-full inline-block">Día ${data.day} • ${dateText}</p>
-                            <span class="text-gray-300 lg:hidden text-sm">➔</span>
-                        </div>
-                        <h4 class="font-bold text-gray-900 mt-1 md:text-lg leading-tight line-clamp-1">${data.title}</h4>
-                        <p class="text-xs text-gray-500 flex items-center mt-1.5 font-medium"><span class="unicode-icon text-[10px] mr-1 text-japan-text opacity-70">📍</span>${data.location}</p>
-                    </div>
-                `;
-                    container.appendChild(card);
-                });
-            }
-
-            // Variables globales para mapas
-            let globalLeafletMap = null;
-            let currentMapMarker = null;
-
-            // --- 4. LOGIC: Select Day and Show Details ---
-            function selectDay(index, cardElement) {
-                // Highlight selected card
-                document.querySelectorAll('.day-card').forEach(c => c.classList.remove('selected'));
-                cardElement.classList.add('selected');
-
-                // Hide empty state, show content
-                document.getElementById('empty-state').classList.add('hidden');
-                const contentDiv = document.getElementById('detail-content');
-                contentDiv.classList.remove('hidden');
-
-                const data = itineraryData[index];
-
-                // === Setup Leaflet Map ===
-                const points = [];
-                if (data.route && Array.isArray(data.route)) {
-                    data.route.forEach((step, stepIndex) => {
-                        if (step.lat && typeof step.lat === 'number' && step.lng && typeof step.lng === 'number') {
-                            points.push([step.lat, step.lng, `${stepIndex + 1}. ${step.name}`]);
-                        }
-                    });
-                }
-
-                if (window.dayMarkers && globalLeafletMap) {
-                    window.dayMarkers.forEach(m => globalLeafletMap.removeLayer(m));
-                }
-                window.dayMarkers = [];
-
-                const mapContainer = document.getElementById('map-container');
-                if (points.length > 0) {
-                    mapContainer.style.display = 'block';
-
-                    if (!globalLeafletMap) {
-                        globalLeafletMap = L.map('map-container').setView([points[0][0], points[0][1]], 13);
-                        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                            attribution: '&copy; OpenStreetMap',
-                            maxZoom: 19
-                        }).addTo(globalLeafletMap);
-                        window.map = globalLeafletMap;
-                    }
-
-                    const bounds = L.latLngBounds();
-                    points.forEach(pt => {
-                        const marker = L.marker([pt[0], pt[1]]).bindPopup(`<b>${pt[2]}</b>`).addTo(globalLeafletMap);
-                        window.dayMarkers.push(marker);
-                        bounds.extend([pt[0], pt[1]]);
-                    });
-
-                    if (points.length > 1) {
-                        globalLeafletMap.fitBounds(bounds, { padding: [30, 30] });
-                    } else {
-                        globalLeafletMap.setView([points[0][0], points[0][1]], 14);
-                    }
-                    setTimeout(() => globalLeafletMap.invalidateSize(), 50);
-                } else {
-                    mapContainer.style.display = 'none';
-                }
-
-                // Populate data
-                document.getElementById('detail-date').textContent = `Día ${data.day} - ${data.day} Nov (${data.location})`;
-                document.getElementById('detail-title').textContent = data.title;
-                document.getElementById('detail-icon').textContent = data.icon;
-                document.getElementById('detail-description').textContent = data.description;
-
-                // Populate Route Timeline
-                const routeContainer = document.getElementById('detail-route');
-                routeContainer.innerHTML = '';
-                data.route.forEach((step, i) => {
-                    const li = document.createElement('li');
-                    li.className = "relative pl-10 pb-6 last:pb-0";
-
-                    // Accordion interactivo
-                    const hasDetailed = !!step.detailed_info;
-                    const cursorClass = hasDetailed ? "cursor-pointer" : "";
-                    const arrowIcon = hasDetailed ? `<div class="expand-icon transition-transform duration-300 text-gray-400 text-sm ml-2">▼</div>` : "";
-                    const detailedHtml = hasDetailed ? `<div class="detailed-info hidden overflow-hidden transition-all duration-300 mt-4 pt-4 border-t border-gray-100 text-sm text-gray-700 leading-relaxed space-y-2 opacity-0">${step.detailed_info}</div>` : "";
-                    const onClickAttr = hasDetailed ? `onclick="toggleAccordion(this)"` : "";
-
-                    li.innerHTML = `
-                    <span class="absolute left-0 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-japan-accent ring-4 ring-white shadow-sm z-10 text-[10px] text-white font-bold">${i + 1}</span>
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-japan-accent/20 transition-all ${cursorClass}" ${onClickAttr}>
-                        <div class="flex justify-between items-start mb-2">
-                            <p class="text-gray-900 font-bold text-lg leading-tight flex items-center">${step.name} ${arrowIcon}</p>
-                            <span class="text-xs font-bold text-gray-400 bg-gray-50 px-2 py-1 rounded-md ml-2 flex-shrink-0">${step.time || ''}</span>
-                        </div>
-                        <div class="flex flex-wrap gap-3 mt-2">
-                            <span class="text-xs text-japan-matcha font-bold flex items-center"><span class="mr-1">💴</span> ${step.price || 'Gratis'}</span>
-                            <p class="text-sm text-gray-600 leading-relaxed w-full sm:w-auto"><span class="text-gray-400 mr-1">📝</span> ${step.brief_note || ''}</p>
-                        </div>
-                        ${detailedHtml}
-                    </div>
-                `;
-                    routeContainer.appendChild(li);
-                });
-
-                // Populate Celiac Info
-                document.getElementById('detail-celiac-text').innerHTML = data.celiac;
-
-                // Populate Hotel Card
-                const hotelContainer = document.getElementById('detail-hotel-container');
-                if (data.hotel && data.hotel.name !== "-") {
-                    hotelContainer.innerHTML = `
-                        <div class="bg-blue-50/50 rounded-2xl p-5 border border-blue-100 shadow-sm flex items-center hover:bg-blue-50 transition-colors cursor-pointer group" onclick="window.open('${data.hotel.mapLink}', '_blank')">
-                            <div class="p-3 bg-white rounded-xl shadow-sm self-start">
-                                <span class="text-2xl drop-shadow-sm block">🏨</span>
-                            </div>
-                            <div class="ml-4 flex-grow">
-                                <p class="text-[10px] uppercase tracking-widest text-blue-600 font-bold mb-1">Tu Alojamiento Diurno</p>
-                                <h4 class="font-bold text-gray-900 group-hover:text-blue-700 transition-colors">${data.hotel.name}</h4>
-                                <p class="text-xs text-gray-500 mt-1">${data.hotel.address}</p>
-                            </div>
-                            <div class="text-blue-300 group-hover:text-blue-500 transition-colors ml-2 flex-shrink-0">
-                                ↗
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    hotelContainer.innerHTML = '';
-                }
-
-                // Populate Restaurants Card
-                const restsContainer = document.getElementById('detail-restaurants-container');
-                if (data.restaurantesSeguros && data.restaurantesSeguros.length > 0) {
-                    let restaurantsHtml = data.restaurantesSeguros.map(r => `
-                        <div class="bg-white rounded-xl p-4 shadow-[0_2px_8px_rgb(0,0,0,0.04)] mb-3 last:mb-0 border border-gray-100 border-l-4 border-l-green-400">
-                            <h5 class="font-bold text-gray-800 text-sm mb-1">${r.name}</h5>
-                            <p class="text-xs text-gray-500">${r.desc}</p>
-                        </div>
-                    `).join('');
-
-                    restsContainer.innerHTML = `
-                        <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-                            <div class="flex items-center mb-4">
-                                <span class="text-2xl mr-3">🍽️</span>
-                                <h4 class="font-bold font-serif text-lg">Opciones Seguras Cercanas</h4>
-                            </div>
-                            ${restaurantsHtml}
-                        </div>
-                    `;
-                } else {
-                    restsContainer.innerHTML = '';
-                }
-
-                // Handle Mobile Device Logic
-                if (window.innerWidth < 1024) {
-                    // Open overlay instead of scrolling
-                    document.getElementById('day-detail-container').classList.add('open');
-                    // Ensure scroll is at top of the overlay
-                    document.getElementById('day-detail-container').scrollTop = 0;
-                    if (globalLeafletMap) setTimeout(() => globalLeafletMap.invalidateSize(), 300);
-                } else {
-                    // Desktop smooth scroll logic disabled, handled visually
-                }
-            }
-
-            // --- Mobile Overlay Close ---
-            function closeMobileDetail() {
-                document.getElementById('day-detail-container').classList.remove('open');
-            }
-
-            function toggleAccordion(element) {
-                const infoDiv = element.querySelector('.detailed-info');
-                const icon = element.querySelector('.expand-icon');
-                if (!infoDiv) return;
-
-                if (infoDiv.classList.contains('hidden')) {
-                    infoDiv.classList.remove('hidden');
-                    setTimeout(() => infoDiv.classList.remove('opacity-0'), 10);
-                    icon.classList.add('rotate-180');
-                } else {
-                    infoDiv.classList.add('opacity-0');
-                    icon.classList.remove('rotate-180');
-                    setTimeout(() => infoDiv.classList.add('hidden'), 300);
-                }
-            }
-
-            // --- 5. LOGIC: Render Dashboard Data ---
-            function renderDashboard() {
-                const dynamicCount = {};
-                // Recorrer los días de alojamiento (asumo hasta el día 20 inclusive, que están durmiendo allí)
-                itineraryData.slice(0, 20).forEach(day => {
-                    let key = day.location;
-                    if (key === 'Fujiyoshida' || key === 'Kamakura' || key === 'Nikko') key = 'Tokio';
-                    if (key === 'Nara' || key === 'Himeji' || key === 'Hiroshima') key = 'Kioto';
-                    if (key === 'Gifu') key = 'Takayama';
-                    if (dynamicCount[key]) dynamicCount[key]++;
-                    else dynamicCount[key] = 1;
-                });
-
-                const container = document.getElementById('nights-distribution');
-                container.innerHTML = '';
-                Object.entries(dynamicCount).forEach(([city, nights]) => {
-                    container.innerHTML += `
-                        <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col justify-center items-center">
-                            <span class="text-2xl font-bold text-gray-800">${nights}</span>
-                            <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">${city}</span>
-                        </div>
-                    `;
-                });
-            }
-
-            let summaryMap = null;
-            function renderSummaryMap() {
-                if (summaryMap) return;
-
-                document.getElementById('map-loader').style.display = 'none';
-
-                summaryMap = L.map('summary-map', { zoomControl: false });
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                    maxZoom: 19
-                }).addTo(summaryMap);
-
-                const cities = [
-                    { name: "Tokio", lat: 35.6762, lng: 139.6503 },
-                    { name: "Kioto", lat: 35.0116, lng: 135.7681 },
-                    { name: "Osaka", lat: 34.6937, lng: 135.5023 },
-                    { name: "Kanazawa", lat: 36.5613, lng: 136.6562 },
-                    { name: "Takayama", lat: 36.1461, lng: 137.2523 }
-                ];
-
-                const markers = cities.map(c => {
-                    const marker = L.marker([c.lat, c.lng]).addTo(summaryMap);
-                    marker.bindPopup(`<b>${c.name}</b>`);
-                    return marker;
-                });
-
-                const group = new L.featureGroup(markers);
-                summaryMap.fitBounds(group.getBounds(), { padding: [30, 30] });
-            }
-
-            // --- 6. SUPABASE: Collaborative Budget & Hotels ---
-            
-            // Reutilizamos el sistema de PIN existente
-            function obtenerPin() {
-                return sessionStorage.getItem('trip_pin');
-            }
-
-            let budgetChartInstance = null;
-
-            // Al cargar la vista UI vemos si hay PIN y cambiamos el candado
-            function updateLockUI() {
-                const icon = document.getElementById('lock-icon');
-                if(!icon) return;
-                const savedPin = sessionStorage.getItem('trip_pin');
-                icon.innerText = savedPin ? '🔓' : '🔒';
-            }
-
-            function promptPin() {
-                const currentPin = sessionStorage.getItem('trip_pin');
-                if (currentPin) {
-                    if(confirm("¿Deseas cerrar la caja fuerte (borrar PIN actual)?")) {
-                        sessionStorage.removeItem('trip_pin');
-                        updateLockUI();
-                        alert("Caja fuerte cerrada. Tu navegador ya no enviará el PIN.");
-                    }
-                    return;
-                }
-                
-                const code = prompt("Introduce el PIN secreto pactado por la tripulación:");
-                if (code) {
-                    sessionStorage.setItem('trip_pin', code);
-                    updateLockUI();
-                    alert("PIN guardado temporalmente en este navegador. Ya puedes realizar transferencias.");
-                }
-            }
-
-            async function fetchBudget() {
-                const tbody = document.getElementById('budget-table-body');
-                tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-gray-400 font-bold loading-pulse">Cargando la bóveda de datos...</td></tr>';
-
-                try {
-                    // SELECT sigue siendo público
-                    const { data, error } = await supabaseClient
-                        .from('presupuesto')
-                        .select('*')
-                        .eq('viaje_id', tripConfig.id)
-                        .order('created_at', { ascending: false });
-
-                    if (error) throw error;
-                    
-                    updateLockUI();
-                    renderBudgetTable(data);
-                    renderBudgetChart(data);
-                } catch (error) {
-                    console.error('Error fetching budget:', error);
-                    tbody.innerHTML = `<tr><td colspan="5" class="py-10 px-8 text-center bg-red-50 text-red-600 rounded-b-xl"><span class="block text-3xl mb-2">⚠️</span><b>Error conectando a Supabase.</b><br><span class="text-xs text-red-500 font-medium">Revisa las claves en tu script o crea la tabla 'presupuesto' como indica el SQL provisto.</span></td></tr>`;
-                    // Render empty chart if it fails
-                    renderBudgetChart([]);
-                }
-            }
-
-            function renderBudgetTable(data) {
-                const tbody = document.getElementById('budget-table-body');
-                const totalText = document.getElementById('b-total-text');
-
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-gray-400 font-bold italic">Bóveda vacía. Registra el primer gasto.</td></tr>';
-                    totalText.textContent = "Total: 0.00 €";
-                    return;
-                }
-
-                tbody.innerHTML = '';
-                let total = 0;
-
-                data.forEach(item => {
-                    total += parseFloat(item.monto);
-
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-gray-50 transition-colors group border-b border-gray-100 last:border-0";
-
-                    const isPaid = item.pagado;
-                    const paidClass = isPaid ? 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200' : 'bg-orange-50 text-orange-800 border-orange-200 hover:bg-orange-100';
-                    const paidText = isPaid ? '✅ Pagado' : '⏱️ Pendiente';
-                    const icon = getCategoryIcon(item.categoria);
-
-                    tr.innerHTML = `
-                        <td class="px-6 py-4 font-bold text-gray-900">${item.nombre}</td>
-                        <td class="px-3 py-4 flex items-center text-gray-600 text-xs tracking-wider"><span class="mr-2 text-base filter drop-shadow-sm">${icon}</span> ${item.categoria}</td>
-                        <td class="px-3 py-4 text-right font-bold text-gray-900">${parseFloat(item.monto).toFixed(2)} €</td>
-                        <td class="px-3 py-4 text-center">
-                            <button onclick="togglePaid('${item.id}', ${!isPaid})" class="text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded-lg border ${paidClass} transition-colors cursor-pointer shadow-sm">
-                                ${paidText}
-                            </button>
-                        </td>
-                        <td class="px-3 py-4 text-center">
-                            <button onclick="deleteItem('${item.id}')" class="text-gray-300 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50" title="Eliminar">
-                                🗑️
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-
-                totalText.innerHTML = `Total Real: <span class="text-japan-accent">${total.toFixed(2)} €</span>`;
-            }
-
-            function getCategoryIcon(category) {
-                if (category === 'Vuelos') return '✈️';
-                if (category === 'Hoteles') return '🏨';
-                if (category === 'Transporte') return '🚄';
-                if (category === 'Comida') return '🍱';
-                return '🎟️';
-            }
-
-            // Las funciones de escritura ahora invocan funciones RPC blindadas en el backend
-            async function handleBudgetSubmit(e) {
-                e.preventDefault();
-                const pin = sessionStorage.getItem('trip_pin');
-                if(!pin) {
-                    alert("🔐 Caja fuerte bloqueada. Pulsa el icono del candado arriba a la derecha e introduce el PIN antes de operar.");
-                    return;
-                }
-
-                const btn = document.getElementById('b-submit-btn');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = 'Almacenando... ☁️';
-                btn.classList.add('opacity-70');
-                btn.disabled = true;
-
-                const name = document.getElementById('b-name').value;
-                const cat = document.getElementById('b-category').value;
-                const amt = document.getElementById('b-amount').value;
-
-                try {
-                    // Llamamos a la función protegida en lugar del insert genérico
-                    const { error } = await supabaseClient.rpc('save_expense', {
-                        pin_input: pin,
-                        p_viaje_id: tripConfig.id,
-                        p_nombre: name,
-                        p_categoria: cat,
-                        p_monto: parseFloat(amt)
-                    });
-                        
-                    if (error) throw error;
-
-                    document.getElementById('budget-form').reset();
-                    await fetchBudget();
-                } catch (error) {
-                    alert('Acceso denegado: ' + error.message);
-                } finally {
-                    btn.innerHTML = originalText;
-                    btn.classList.remove('opacity-70');
-                    btn.disabled = false;
-                }
-            }
-
-            async function togglePaid(id, newStatus) {
-                const pin = sessionStorage.getItem('trip_pin');
-                if(!pin) {
-                    alert("🔐 Caja fuerte bloqueada. Necesitas el PIN para modificar datos.");
-                    return;
-                }
-
-                try {
-                    const { error } = await supabaseClient.rpc('toggle_expense_paid', {
-                        pin_input: pin,
-                        p_viaje_id: tripConfig.id,
-                        p_id: id,
-                        p_status: newStatus
-                    });
-
-                    if (error) throw error;
-                    fetchBudget();
-                } catch (error) {
-                    alert('Acceso denegado: ' + error.message);
-                }
-            }
-
-            async function deleteItem(id) {
-                const pin = sessionStorage.getItem('trip_pin');
-                if(!pin) {
-                    alert("🔐 Caja fuerte bloqueada. Necesitas el PIN para purgar datos.");
-                    return;
-                }
-
-                if (!confirm("¿Deseas purgar permanentemente este gasto de la base de datos central?")) return;
-                try {
-                    const { error } = await supabaseClient.rpc('delete_expense', {
-                        pin_input: pin,
-                        p_viaje_id: tripConfig.id,
-                        p_id: id
-                    });
-
-                    if (error) throw error;
-                    fetchBudget();
-                } catch (error) {
-                    alert('Acceso denegado: ' + error.message);
-                }
-            }
-
-            // --- 7. LOGIC: Render Dynamic Budget Chart.js ---
-            function renderBudgetChart(data) {
-                const ctx = document.getElementById('budgetChart').getContext('2d');
-
-                // Agrupar totales por categoría
-                const sums = {
-                    'Vuelos': 0, 'Hoteles': 0, 'Transporte': 0, 'Comida': 0, 'Extras': 0
-                };
-
-                if (data && data.length > 0) {
-                    data.forEach(item => {
-                        if (sums[item.categoria] !== undefined) {
-                            sums[item.categoria] += parseFloat(item.monto);
-                        } else {
-                            sums['Extras'] += parseFloat(item.monto);
-                        }
-                    });
-                }
-
-                const labels = Object.keys(sums);
-                const values = Object.values(sums);
-
-                if (budgetChartInstance) {
-                    budgetChartInstance.destroy();
-                }
-
-                budgetChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Costo Total Consolidado (€)',
-                            data: values,
-                            backgroundColor: [
-                                '#3B82F6', // Blue 
-                                '#10B981', // Green
-                                '#F59E0B', // Amber
-                                '#EF4444', // Red 
-                                '#8B5CF6'  // Purple 
-                            ],
-                            borderWidth: 0,
-                            borderRadius: 6
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y', // Hace que la barra sea horizontal
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        return ' €' + context.raw.toFixed(2);
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                grid: {
-                                    display: false
-                                }
-                            },
-                            y: {
-                                grid: {
-                                    display: false
-                                },
-                                ticks: {
-                                    font: {
-                                        family: "'Outfit', 'sans-serif'",
-                                        weight: '600'
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // --- 8. LOGIC: Hotels Manager ---
-            async function fetchHotels() {
-                const container = document.getElementById('hotels-container');
-                try {
-                    const { data, error } = await supabaseClient
-                        .from('hoteles')
-                        .select('*')
-                        .eq('viaje_id', tripConfig.id)
-                        .order('check_in', { ascending: true });
-
-                    if (error) throw error;
-                    renderHotelCards(data);
-                } catch (error) {
-                    console.error('Error hotels:', error);
-                    container.innerHTML = '<p class="text-center text-red-400 font-bold py-12 col-span-full">Error al cargar alojamientos.</p>';
-                }
-            }
-
-            function renderHotelCards(list) {
-                const container = document.getElementById('hotels-container');
-                if (!list || list.length === 0) {
-                    container.innerHTML = '<p class="text-center text-gray-400 py-12 col-span-full">No hay hoteles registrados aún.</p>';
-                    return;
-                }
-
-                container.innerHTML = list.map(h => {
-                    const isPaid = h.estado_pago === 'Pagado';
-                    const statusClass = isPaid ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700';
-                    const mapsBtn = h.enlace ? `<a href="${h.enlace}" target="_blank" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase hover:bg-blue-100 transition-colors">📍 Ver Mapa/Booking</a>` : '';
-                    
-                    return `
-                        <div class="bg-white rounded-2xl p-5 shadow-premium border-t-4 ${isPaid ? 'border-green-400' : 'border-orange-400'} flex flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between items-start mb-2">
-                                    <span class="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded ${statusClass}">${h.estado_pago}</span>
-                                    <button onclick="deleteHotel('${h.id}')" class="text-gray-300 hover:text-red-500 transition-colors">🗑️</button>
-                                </div>
-                                <h4 class="font-bold text-gray-900 leading-tight">${h.nombre}</h4>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">${h.ciudad}</p>
-                                <div class="flex items-center text-xs text-gray-500 space-x-2 mb-3">
-                                    <span>📅 ${new Date(h.check_in).toLocaleDateString()} - ${new Date(h.check_out).toLocaleDateString()}</span>
-                                </div>
-                                ${h.notas ? `<p class="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg italic mb-3">"${h.notas}"</p>` : ''}
-                            </div>
-                            <div class="flex justify-between items-center mt-2 pt-3 border-t border-gray-50">
-                                <span class="font-bold text-gray-800">${h.precio} €</span>
-                                ${mapsBtn}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            async function addHotel() {
-                const pin = obtenerPin();
-                if (!pin) { alert("🔐 Caja fuerte bloqueada. Necesitas el PIN para guardar datos."); return; }
-
-                const data = {
-                    p_viaje_id: tripConfig.id,
-                    ciudad_in: document.getElementById('h-city').value,
-                    nombre_in: document.getElementById('h-name').value,
-                    enlace_in: document.getElementById('h-link').value,
-                    check_in_in: document.getElementById('h-checkin').value,
-                    check_out_in: document.getElementById('h-checkout').value,
-                    precio_in: parseFloat(document.getElementById('h-price').value || 0),
-                    estado_pago_in: document.getElementById('h-status').value,
-                    notas_in: document.getElementById('h-notes').value
-                };
-
-                try {
-                    const { error } = await supabaseClient.rpc('gestionar_hotel', { 
-                        operacion: 'INSERT', 
-                        pin_input: pin,
-                        ...data
-                    });
-                    if (error) throw error;
-                    document.getElementById('hotel-form').reset();
-                    fetchHotels();
-                } catch (e) { alert('Error: ' + e.message); }
-            }
-
-            async function deleteHotel(id) {
-                if (!confirm("¿Deseas purgar permanentemente este registro de alojamiento?")) return;
-                const pin = obtenerPin();
-                if (!pin) { alert("🔐 Necesitas el PIN para purgar datos."); return; }
-
-                try {
-                    const { error } = await supabaseClient.rpc('gestionar_hotel', { 
-                        operacion: 'DELETE', 
-                        pin_input: pin,
-                        p_viaje_id: tripConfig.id,
-                        hotel_id: id
-                    });
-                    if (error) throw error;
-                    fetchHotels();
-                } catch (e) { alert('Error: ' + e.message); }
-            }
-
-
-            // --- 9. INITIALIZATION ---
-            document.addEventListener('DOMContentLoaded', () => {
-                initAppConfig();
-                
-                renderItineraryList();
-                renderDashboard();
-                setTimeout(renderSummaryMap, 200);
-
-                const firstCard = document.querySelector('.day-card');
-                if (firstCard) selectDay(0, firstCard);
-
-                window.dashboardRendered = true;
-            });
-
-        </script>
+                <!-- Scripts de la Aplicación Modular -->
+        <script src="js/utils.js"></script>
+        <script src="js/currency.js"></script>
+        <script src="js/gps.js"></script>
+        <script src="js/checklist.js"></script>
+        <script src="js/notes.js"></script>
+        <script src="js/budget.js"></script>
+        <script src="js/hotels.js"></script>
+        <script src="js/app.js"></script>
 </body>
 
 </html>
