@@ -8,7 +8,7 @@ const tripConfig = {
     supabaseKey: 'sb_publishable_UnOPH2ngXlqvnGQtMqXlKg_d49a0iUh'
 };
 
-const itineraryData = [
+const staticItineraryData = [
     {
         "day": 0,
         "date": "31-Oct-2026",

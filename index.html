@@ -107,13 +107,19 @@
                     </div>
                 </div>
 
-                <!-- Badge Informativo Familiar (Cercano) -->
-                <div class="text-center md:text-right w-full md:w-auto flex justify-center md:justify-end">
+                <!-- Badge Informativo Familiar (Cercano) y Botón de Acceso -->
+                <div class="text-center md:text-right w-full md:w-auto flex justify-center md:justify-end items-center gap-3">
                     <span
                         class="text-xs md:text-sm font-bold text-gray-600 bg-red-50/60 border border-red-100 px-3 py-1.5 rounded-full inline-flex items-center gap-1.5 shadow-sm">
                         ⛩️ <b>Grupi en Japón ⛩️</b> <span class="text-gray-300">|</span> 30 Oct - 19 Nov <span
                             class="text-gray-300"></span>
                     </span>
+                    
+                    <!-- Botón de autenticación dinámico -->
+                    <button id="auth-btn" onclick="openAuthModal()" class="text-xs font-bold text-gray-600 bg-white border border-gray-200 px-3.5 py-1.5 rounded-full hover:bg-gray-50 active:scale-95 transition-all shadow-sm flex items-center gap-1">
+                        <span>🔑</span> <span id="auth-btn-text">Acceder</span>
+                    </button>
+
                     <!-- Elementos ocultos para mantener IDs compatibles con app.js -->
                     <span id="app-icon" class="hidden"></span>
                     <span id="app-header-title" class="hidden"></span>
@@ -210,9 +216,12 @@
                 <!-- Right Column / Mobile Overlay: Day Details -->
                 <div class="mobile-detail-overlay lg:static lg:transform-none lg:w-2/3 bg-white lg:rounded-2xl lg:shadow-floating border-t-4 border-japan-accent overflow-y-auto h-full p-6 md:p-8"
                     id="day-detail-container">
-                    <!-- Mobile Close Button -->
+                    <!-- Drag handle at top of mobile overlay -->
+                    <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-4 lg:hidden"></div>
+
+                    <!-- Mobile Close Button (floating at bottom on mobile) -->
                     <button onclick="closeMobileDetail()"
-                        class="close-btn mb-6 flex items-center text-gray-500 hover:text-gray-800 bg-gray-50 px-4 py-2 rounded-full w-max mx-auto shadow-sm fixed top-4 right-4 z-[101] border border-gray-200">
+                        class="close-btn flex items-center text-gray-700 hover:text-gray-950 bg-white px-5 py-3 rounded-full w-max mx-auto shadow-lg fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[101] border border-gray-200 font-bold active:scale-95 transition-transform lg:static lg:mb-6 lg:transform-none">
                         <span class="mr-2">❌</span> Volver
                     </button>
 
@@ -225,9 +234,15 @@
                     <!-- Details will be injected here by JS -->
                     <div id="detail-content" class="hidden mt-10 lg:mt-0 flex flex-col">
 
+                        <!-- Botón Acordeón Mapa en Móviles -->
+                        <button id="map-toggle-btn" onclick="toggleMapCollapse()" class="w-full bg-gray-50 border border-gray-200 text-gray-700 font-bold text-xs py-3 px-4 rounded-xl flex items-center justify-between mb-4 lg:hidden hover:bg-gray-100 transition-colors">
+                            <span class="flex items-center gap-1.5">🗺️ Ver Mapa del Día</span>
+                            <span id="map-toggle-arrow" class="transition-transform duration-300">▼</span>
+                        </button>
+
                         <!-- Mapa Leaflet (Visual on mobile / Desktop top) -->
                         <div id="map-container"
-                            class="w-full h-56 md:h-64 bg-gray-100 border border-gray-200 rounded-2xl mb-8 relative z-0 overflow-hidden shadow-sm lg:order-first">
+                            class="w-full h-56 md:h-64 bg-gray-100 border border-gray-200 rounded-2xl mb-8 relative z-0 overflow-hidden shadow-sm lg:order-first hidden lg:block">
                             <!-- GPS Locate Button -->
                             <button onclick="locateOnDayMap(event)" title="Mi ubicación actual"
                                 class="absolute bottom-4 right-4 bg-white hover:bg-gray-50 border border-gray-200 shadow-md text-gray-700 w-10 h-10 rounded-full flex items-center justify-center font-bold z-[10] hover:scale-105 active:scale-95 transition-all">
@@ -1181,6 +1196,62 @@
             Guía de Viaje · Diseño sin agobios
         </div>
     </footer>
+
+    <!-- Auth Modal (Email/Contraseña) -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center hidden p-4 transition-all duration-300">
+        <div class="bg-white border border-gray-150 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-premium flex flex-col relative transform scale-95 transition-transform duration-300" id="auth-modal-content">
+            <!-- Close button -->
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-lg transition-colors focus:outline-none">❌</button>
+            
+            <div class="text-center mb-6">
+                <span class="text-4xl filter drop-shadow-sm mb-2 block">⛩️</span>
+                <h3 class="text-2xl font-serif font-bold text-gray-900" id="auth-modal-title">Iniciar Sesión</h3>
+                <p class="text-xs text-gray-500 mt-1 font-semibold">Accede para habilitar la edición del viaje en tiempo real</p>
+            </div>
+
+            <div id="auth-message" class="hidden text-xs font-bold p-3.5 rounded-xl mb-4 border"></div>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1.5">Correo Electrónico</label>
+                    <input type="email" id="auth-email" required class="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-japan-accent/60 transition-colors font-medium text-gray-800 text-sm" placeholder="tu@email.com">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1.5">Contraseña</label>
+                    <input type="password" id="auth-password" required minlength="6" class="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-japan-accent/60 transition-colors font-medium text-gray-800 text-sm" placeholder="••••••••">
+                </div>
+                
+                <button type="submit" id="auth-submit-btn" class="w-full bg-japan-accent text-white font-bold py-3.5 rounded-xl shadow-md hover:bg-red-800 transition-all flex items-center justify-center transform active:scale-95 text-sm mt-6">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="text-center mt-6 pt-4 border-t border-gray-100 text-xs text-gray-500 font-medium">
+                <span id="auth-toggle-desc">¿No tienes una cuenta aún?</span>
+                <button onclick="toggleAuthMode(event)" id="auth-toggle-btn" class="text-japan-accent font-bold hover:underline ml-1">Regístrate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav Bar for Mobile Devices -->
+    <div id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 flex justify-around py-2.5 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] md:hidden">
+        <button onclick="switchTab('itinerario')" id="bnav-itinerario" class="flex flex-col items-center text-gray-500 hover:text-japan-accent transition-colors w-16">
+            <span class="text-xl">🗺️</span>
+            <span class="text-[9px] uppercase tracking-wider font-extrabold mt-0.5">Ruta</span>
+        </button>
+        <button onclick="switchTab('presupuesto')" id="bnav-presupuesto" class="flex flex-col items-center text-gray-500 hover:text-japan-accent transition-colors w-16">
+            <span class="text-xl">💰</span>
+            <span class="text-[9px] uppercase tracking-wider font-extrabold mt-0.5">Gastos</span>
+        </button>
+        <button onclick="switchTab('celiaquia')" id="bnav-celiaquia" class="flex flex-col items-center text-gray-500 hover:text-japan-accent transition-colors w-16">
+            <span class="text-xl">🌾</span>
+            <span class="text-[9px] uppercase tracking-wider font-extrabold mt-0.5">Alérgenos</span>
+        </button>
+        <button onclick="switchTab('preparativos')" id="bnav-preparativos" class="flex flex-col items-center text-gray-500 hover:text-japan-accent transition-colors w-16">
+            <span class="text-xl">🎒</span>
+            <span class="text-[9px] uppercase tracking-wider font-extrabold mt-0.5">Checklist</span>
+        </button>
+    </div>
 
     <!-- JavaScript Logic -->
     <!-- Scripts de la Aplicación Modular -->

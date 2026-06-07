@@ -36,14 +36,8 @@ function initAppConfig() {
         }
     }
 
-    // Dynamic Cities for Hotel Form
+    // Dynamic Cities for Hotel Form (Will be filled after fetching itinerary)
     const citySelect = document.getElementById('h-city');
-    if (citySelect && itineraryData) {
-        const uniqueCities = [...new Set(itineraryData.map(d => d.location))].sort();
-        citySelect.innerHTML = uniqueCities.map(c => `<option value="${c}">${c}</option>`).join('') + '<option value="Otra">Otra (Manual)</option>';
-    }
-
-    // Bind Hotel Form manual city input toggle
     const manualContainer = document.getElementById('h-city-manual-container');
     if (citySelect && manualContainer) {
         citySelect.addEventListener('change', function () {
@@ -59,6 +53,8 @@ function initAppConfig() {
     if (typeof supabase !== 'undefined') {
         try {
             supabaseClient = supabase.createClient(tripConfig.supabaseUrl, tripConfig.supabaseKey);
+            // Setup Auth Listener
+            setupAuthListener();
         } catch (err) {
             console.error("Error al inicializar el cliente de Supabase:", err);
         }
@@ -92,6 +88,17 @@ function switchTab(tabId) {
     if (activeBtn) {
         activeBtn.classList.remove('text-gray-600', 'hover:text-japan-text');
         activeBtn.classList.add('bg-white', 'shadow', 'text-japan-accent');
+    }
+
+    // Update bottom nav buttons for mobile
+    document.querySelectorAll('#bottom-nav button').forEach(btn => {
+        btn.classList.remove('text-japan-accent');
+        btn.classList.add('text-gray-500');
+    });
+    const activeBnavBtn = document.getElementById(`bnav-${tabId}`);
+    if (activeBnavBtn) {
+        activeBnavBtn.classList.remove('text-gray-500');
+        activeBnavBtn.classList.add('text-japan-accent');
     }
 
     // Hide all tabs (remove active class — CSS handles display:none)
@@ -565,12 +572,270 @@ function addSmartDaySelectionButton() {
     }
 }
 
+// --- DYNAMIC CITIES DROPDOWN POPULATOR ---
+function populateHotelCities() {
+    const citySelect = document.getElementById('h-city');
+    if (citySelect && window.itineraryData) {
+        const uniqueCities = [...new Set(window.itineraryData.map(d => d.location))].sort();
+        citySelect.innerHTML = uniqueCities.map(c => `<option value="${c}">${c}</option>`).join('') + '<option value="Otra">Otra (Manual)</option>';
+    }
+}
+
+// --- ASYNC FETCH ITINERARY ---
+async function fetchItinerary() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('itinerario')
+            .select('*')
+            .eq('viaje_id', tripConfig.id)
+            .order('day', { ascending: true });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            window.itineraryData = data;
+            setCache('itinerary_data', data);
+        } else {
+            console.warn("No dynamic itinerary rows found in Supabase. Using fallback static data.");
+            window.itineraryData = staticItineraryData || [];
+        }
+    } catch (e) {
+        console.warn("Could not load itinerary from Supabase. Trying local cache...", e);
+        const cached = getCache('itinerary_data');
+        if (cached && cached.length > 0) {
+            window.itineraryData = cached;
+        } else {
+            window.itineraryData = staticItineraryData || [];
+        }
+    }
+    // Populate cities for lodging form
+    populateHotelCities();
+}
+
+// --- COLLAPSABLE LEAFLET MAP ON MOBILE ---
+function toggleMapCollapse() {
+    const mapContainer = document.getElementById('map-container');
+    const arrow = document.getElementById('map-toggle-arrow');
+    if (!mapContainer || !arrow) return;
+
+    if (mapContainer.classList.contains('hidden')) {
+        mapContainer.classList.remove('hidden');
+        arrow.classList.add('rotate-180');
+        if (globalLeafletMap) {
+            setTimeout(() => {
+                globalLeafletMap.invalidateSize();
+            }, 100);
+        }
+    } else {
+        mapContainer.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+    }
+}
+
+// --- DIRECT EDITOR MODE CONTROLLERS ---
+window.isEditingDay = false;
+
+function handleDirectEditToggle() {
+    const btn = document.getElementById('direct-edit-toggle-btn');
+    const textSpan = document.getElementById('direct-edit-text');
+    if (!btn || !textSpan) return;
+
+    if (!window.isEditingDay) {
+        // Start editing
+        window.isEditingDay = true;
+        btn.classList.remove('bg-japan-matcha', 'hover:bg-green-700');
+        btn.classList.add('bg-amber-600', 'hover:bg-amber-700');
+        textSpan.textContent = '💾 Guardar Cambios';
+        toggleDirectEditMode(true);
+    } else {
+        // Save changes
+        saveDirectDayChanges();
+    }
+}
+
+function toggleDirectEditMode(active) {
+    const desc = document.getElementById('detail-description');
+    const celiac = document.getElementById('detail-celiac-text');
+    
+    if (desc) {
+        desc.contentEditable = active;
+        if (active) desc.classList.add('border-2', 'border-dashed', 'border-amber-400', 'p-2', 'bg-white');
+        else desc.classList.remove('border-2', 'border-dashed', 'border-amber-400', 'p-2', 'bg-white');
+    }
+    if (celiac) {
+        celiac.contentEditable = active;
+        if (active) celiac.classList.add('border-2', 'border-dashed', 'border-amber-400', 'p-2', 'bg-white');
+        else celiac.classList.remove('border-2', 'border-dashed', 'border-amber-400', 'p-2', 'bg-white');
+    }
+
+    // Route steps
+    const routeList = document.getElementById('detail-route');
+    if (routeList) {
+        const items = routeList.querySelectorAll('li');
+        items.forEach((item, index) => {
+            // Step Title/Name
+            const nameEl = item.querySelector('.flex.justify-between.items-start p');
+            if (nameEl) {
+                nameEl.contentEditable = active;
+                if (active) nameEl.classList.add('border-b', 'border-dashed', 'border-amber-400', 'bg-amber-50/30');
+                else nameEl.classList.remove('border-b', 'border-dashed', 'border-amber-400', 'bg-amber-50/30');
+            }
+
+            // Time badge
+            const timeEl = item.querySelector('.flex.justify-between.items-start span');
+            if (timeEl) {
+                timeEl.contentEditable = active;
+                if (active) timeEl.classList.add('border-b', 'border-dashed', 'border-amber-400', 'bg-amber-50/30');
+                else timeEl.classList.remove('border-b', 'border-dashed', 'border-amber-400', 'bg-amber-50/30');
+            }
+
+            // Price
+            const priceEl = item.querySelector('.flex.flex-wrap.gap-3 span');
+            if (priceEl) {
+                priceEl.contentEditable = active;
+                if (active) priceEl.classList.add('border-b', 'border-dashed', 'border-amber-400', 'bg-amber-50/30');
+                else priceEl.classList.remove('border-b', 'border-dashed', 'border-amber-400', 'bg-amber-50/30');
+            }
+
+            // Brief Note
+            const noteEl = item.querySelector('.flex.flex-wrap.gap-3 p');
+            if (noteEl) {
+                noteEl.contentEditable = active;
+                if (active) noteEl.classList.add('border-b', 'border-dashed', 'border-amber-400', 'bg-amber-50/30');
+                else noteEl.classList.remove('border-b', 'border-dashed', 'border-amber-400', 'bg-amber-50/30');
+            }
+
+            // Detailed Info
+            const detailedEl = item.querySelector('.detailed-info');
+            if (detailedEl) {
+                if (active) {
+                    detailedEl.classList.remove('hidden');
+                    detailedEl.classList.remove('opacity-0');
+                    detailedEl.contentEditable = active;
+                    detailedEl.classList.add('border-2', 'border-dashed', 'border-amber-400', 'p-2', 'bg-amber-50/10');
+                } else {
+                    detailedEl.contentEditable = active;
+                    detailedEl.classList.remove('border-2', 'border-dashed', 'border-amber-400', 'p-2', 'bg-amber-50/10');
+                }
+            }
+        });
+    }
+}
+
+async function saveDirectDayChanges() {
+    const index = window.currentSelectedDayIndex;
+    if (index === null || index === undefined) return;
+
+    const dayData = window.itineraryData[index];
+    const descVal = document.getElementById('detail-description').innerText.trim();
+    const celiacVal = document.getElementById('detail-celiac-text').innerHTML.trim();
+
+    // Extract route steps from the DOM
+    const routeList = document.getElementById('detail-route');
+    const updatedRoute = [];
+
+    if (routeList && dayData.route) {
+        const items = routeList.querySelectorAll('li');
+        items.forEach((item, i) => {
+            const originalStep = dayData.route[i] || {};
+            const nameEl = item.querySelector('.flex.justify-between.items-start p');
+            const timeEl = item.querySelector('.flex.justify-between.items-start span');
+            const priceEl = item.querySelector('.flex.flex-wrap.gap-3 span');
+            const noteEl = item.querySelector('.flex.flex-wrap.gap-3 p');
+            const detailedEl = item.querySelector('.detailed-info');
+
+            let nameText = nameEl ? nameEl.innerText.trim() : '';
+            if (nameText.endsWith('▼') || nameText.endsWith('▲')) {
+                nameText = nameText.substring(0, nameText.length - 1).trim();
+            }
+
+            let priceText = priceEl ? priceEl.innerText.trim() : '';
+            if (priceText.startsWith('💴')) {
+                priceText = priceText.substring(1).trim();
+            }
+
+            let noteText = noteEl ? noteEl.innerText.trim() : '';
+            if (noteText.startsWith('📝')) {
+                noteText = noteText.substring(1).trim();
+            }
+
+            updatedRoute.push({
+                name: nameText,
+                time: timeEl ? timeEl.innerText.trim() : '',
+                price: priceText,
+                lat: originalStep.lat,
+                lng: originalStep.lng,
+                brief_note: noteText,
+                detailed_info: detailedEl ? detailedEl.innerHTML.trim() : originalStep.detailed_info
+            });
+        });
+    }
+
+    const btn = document.getElementById('direct-edit-toggle-btn');
+    const textSpan = document.getElementById('direct-edit-text');
+    if (btn && textSpan) {
+        btn.disabled = true;
+        textSpan.textContent = 'Guardando...';
+    }
+
+    try {
+        const { error } = await supabaseClient
+            .from('itinerario')
+            .update({
+                description: descVal,
+                celiac: celiacVal,
+                route: updatedRoute
+            })
+            .eq('viaje_id', tripConfig.id)
+            .eq('day', dayData.day);
+
+        if (error) throw error;
+
+        // Update local arrays
+        dayData.description = descVal;
+        dayData.celiac = celiacVal;
+        dayData.route = updatedRoute;
+        setCache('itinerary_data', window.itineraryData);
+
+        // Finish editing
+        window.isEditingDay = false;
+        if (btn && textSpan) {
+            btn.classList.add('bg-japan-matcha', 'hover:bg-green-700');
+            btn.classList.remove('bg-amber-600', 'hover:bg-amber-700');
+            textSpan.textContent = 'Editar Detalles del Día';
+            btn.disabled = false;
+        }
+        toggleDirectEditMode(false);
+        
+        // Re-select current day to re-render clean view
+        const card = document.getElementById('day-card-' + index);
+        if (card) selectDay(index, card);
+
+        alert("¡Detalles del día actualizados correctamente!");
+    } catch (e) {
+        console.error("Error updating day details:", e);
+        alert("No se pudieron guardar los cambios: " + e.message);
+        if (btn && textSpan) {
+            btn.disabled = false;
+            textSpan.textContent = '💾 Guardar Cambios';
+        }
+    }
+}
+
 // --- INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     try {
         initAppConfig();
     } catch (e) {
         console.error("Error in initAppConfig:", e);
+    }
+
+    // Fetch itinerary data asynchronously from Supabase
+    try {
+        await fetchItinerary();
+    } catch (e) {
+        console.error("Error fetching itinerary:", e);
+        window.itineraryData = staticItineraryData || [];
     }
 
     try {
@@ -579,7 +844,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Error in renderItineraryList:", e);
     }
 
-    // Activate default tab (itinerario) programmatically — as requested by the user
+    // Activate default tab (itinerario) programmatically
     try {
         switchTab('itinerario');
     } catch (e) {

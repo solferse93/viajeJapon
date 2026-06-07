@@ -71,6 +71,11 @@ function renderChecklistGrid() {
         const card = document.createElement('div');
         card.className = `bg-white border rounded-2xl shadow-premium overflow-hidden transition-all duration-200 hover:shadow-floating`;
 
+        const isAuthenticated = isUserAuthenticated();
+        const disabledAttr = isAuthenticated ? '' : 'disabled';
+        const labelClass = isAuthenticated ? '' : 'opacity-70 cursor-not-allowed';
+        const labelTitle = isAuthenticated ? '' : 'title="Inicia sesión para marcar tareas"';
+
         let itemsHtml = '';
         items.forEach(item => {
             totalItemsCount++;
@@ -81,8 +86,8 @@ function renderChecklistGrid() {
             const checkedState = isChecked ? 'checked' : '';
 
             itemsHtml += `
-                <label class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-50 transition-all cursor-pointer ${isChecked ? 'bg-gray-50/20' : ''}">
-                    <input type="checkbox" ${checkedState} 
+                <label ${labelTitle} class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-50 transition-all cursor-pointer ${isChecked ? 'bg-gray-50/20' : ''} ${labelClass}">
+                    <input type="checkbox" ${checkedState} ${disabledAttr}
                         onclick="handleChecklistToggle('${category}', '${item}', this)" 
                         class="w-4.5 h-4.5 rounded text-japan-accent focus:ring-japan-accent border-gray-300 transition-all">
                     <span class="text-sm transition-all duration-200 ${checkedClass}">${item}</span>
@@ -118,29 +123,30 @@ function renderChecklistGrid() {
 async function handleChecklistToggle(category, item, checkboxElement) {
     const isChecked = checkboxElement.checked;
 
+    if (!isUserAuthenticated()) {
+        alert("🔐 Acceso denegado. Debes iniciar sesión para marcar tareas en la nube.");
+        checkboxElement.checked = !isChecked;
+        return;
+    }
+
     // Visual Snappiness: Update immediately locally
     window.checkedItems[item] = isChecked;
     setCache('checklist_checked', window.checkedItems);
     renderChecklistGrid();
 
-    const pin = obtenerPin();
-    if (!pin) {
-        alert("🔐 Caja fuerte bloqueada. El cambio se ha guardado temporalmente en tu caché local, pero necesitas desbloquear la bóveda (introduciendo el PIN a través del candado de arriba a la derecha) para sincronizarlo con el resto de la tripulación en tiempo real.");
-        return;
-    }
-
     try {
-        const { error } = await supabaseClient.rpc('gestionar_checklist', {
-            pin_input: pin,
-            p_viaje_id: tripConfig.id,
-            p_categoria: category,
-            p_item: item,
-            p_completado: isChecked
-        });
+        const { error } = await supabaseClient
+            .from('checklist')
+            .upsert({
+                viaje_id: tripConfig.id,
+                categoria: category,
+                item: item,
+                completado: isChecked
+            }, { onConflict: 'viaje_id,item' });
+
         if (error) throw error;
     } catch (e) {
         console.error("Cloud syncing checklist item failed:", e);
-        // Keep local status but alert
         alert("Aviso de sincronización en la nube: " + e.message);
     }
 }

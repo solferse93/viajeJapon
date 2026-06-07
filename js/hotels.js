@@ -41,13 +41,14 @@ function renderHotelCards(list) {
         const isPaid = h.estado_pago === 'Pagado';
         const statusClass = isPaid ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700';
         const mapsBtn = h.enlace ? `<a href="${h.enlace}" target="_blank" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg font-bold text-[10px] uppercase hover:bg-blue-100 transition-colors">📍 Ver Mapa/Booking</a>` : '';
+        const deleteBtn = isUserAuthenticated() ? `<button onclick="deleteHotel('${h.id}')" class="text-gray-300 hover:text-red-500 transition-colors">🗑️</button>` : '';
 
         return `
             <div class="bg-white rounded-2xl p-5 shadow-premium border-t-4 ${isPaid ? 'border-green-400' : 'border-orange-400'} flex flex-col justify-between hover:shadow-floating transition-shadow duration-200">
                 <div>
                     <div class="flex justify-between items-start mb-2">
                         <span class="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded ${statusClass}">${h.estado_pago}</span>
-                        <button onclick="deleteHotel('${h.id}')" class="text-gray-300 hover:text-red-500 transition-colors">🗑️</button>
+                        ${deleteBtn}
                     </div>
                     <h4 class="font-bold text-gray-900 leading-tight">${h.nombre}</h4>
                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">${h.ciudad}</p>
@@ -66,8 +67,10 @@ function renderHotelCards(list) {
 }
 
 async function addHotel() {
-    const pin = obtenerPin();
-    if (!pin) { alert("🔐 Caja fuerte bloqueada. Necesitas el PIN para guardar datos."); return; }
+    if (!isUserAuthenticated()) {
+        alert("🔐 Acceso denegado. Debes iniciar sesión para añadir hoteles.");
+        return;
+    }
 
     let city = document.getElementById('h-city').value;
     if (city === 'Otra') {
@@ -79,24 +82,21 @@ async function addHotel() {
         city = manualCity;
     }
 
-    const data = {
-        p_viaje_id: tripConfig.id,
-        ciudad_in: city,
-        nombre_in: document.getElementById('h-name').value,
-        enlace_in: document.getElementById('h-link').value,
-        check_in_in: document.getElementById('h-checkin').value,
-        check_out_in: document.getElementById('h-checkout').value,
-        precio_in: parseFloat(document.getElementById('h-price').value || 0),
-        estado_pago_in: document.getElementById('h-status').value,
-        notas_in: document.getElementById('h-notes').value
-    };
-
     try {
-        const { error } = await supabaseClient.rpc('gestionar_hotel', {
-            operacion: 'INSERT',
-            pin_input: pin,
-            ...data
-        });
+        const { error } = await supabaseClient
+            .from('hoteles')
+            .insert({
+                viaje_id: tripConfig.id,
+                ciudad: city,
+                nombre: document.getElementById('h-name').value,
+                enlace: document.getElementById('h-link').value,
+                check_in: document.getElementById('h-checkin').value,
+                check_out: document.getElementById('h-checkout').value,
+                precio: parseFloat(document.getElementById('h-price').value || 0),
+                estado_pago: document.getElementById('h-status').value,
+                notas: document.getElementById('h-notes').value
+            });
+
         if (error) throw error;
 
         document.getElementById('hotel-form').reset();
@@ -104,22 +104,28 @@ async function addHotel() {
         if (manualContainer) manualContainer.classList.add('hidden');
 
         fetchHotels();
-    } catch (e) { alert('Error: ' + e.message); }
+    } catch (e) {
+        alert('Error al guardar hotel: ' + e.message);
+    }
 }
 
 async function deleteHotel(id) {
+    if (!isUserAuthenticated()) {
+        alert("🔐 Acceso denegado. Debes iniciar sesión para purgar datos.");
+        return;
+    }
+
     if (!confirm("¿Deseas purgar permanentemente este registro de alojamiento?")) return;
-    const pin = obtenerPin();
-    if (!pin) { alert("🔐 Necesitas el PIN para purgar datos."); return; }
 
     try {
-        const { error } = await supabaseClient.rpc('gestionar_hotel', {
-            operacion: 'DELETE',
-            pin_input: pin,
-            p_viaje_id: tripConfig.id,
-            hotel_id: id
-        });
+        const { error } = await supabaseClient
+            .from('hoteles')
+            .delete()
+            .eq('id', id);
+
         if (error) throw error;
         fetchHotels();
-    } catch (e) { alert('Error: ' + e.message); }
+    } catch (e) {
+        alert('Error al eliminar: ' + e.message);
+    }
 }

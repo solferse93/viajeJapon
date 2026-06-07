@@ -128,6 +128,9 @@ body {
         transform: translateX(100%);
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 80px; /* Evita que el contenido quede detrás del botón flotante */
     }
 
     .mobile-detail-overlay.open {
@@ -144,3 +147,41 @@ body {
         display: none;
     }
 }
+
+/* --- MOBILE UX ENHANCEMENTS & MEDIA QUERIES --- */
+@media (max-width: 767px) {
+    /* Ocultar navegación superior con overflow molesto */
+    header nav {
+        display: none !important;
+    }
+    
+    /* Añadir espacio inferior en el body para la barra fija */
+    body {
+        padding-bottom: 74px !important;
+    }
+    
+    /* Ajustes adicionales de espaciado en la cabecera */
+    header {
+        padding-bottom: 0.5rem !important;
+    }
+}
+
+/* Zonas de pulsación táctil mínima de 44px para cumplir las directrices táctiles */
+#b-assumed-by-container label,
+#checklist-grid label {
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+/* Transiciones para la rotación del indicador del mapa */
+#map-toggle-arrow {
+    transition: transform 0.3s ease;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+

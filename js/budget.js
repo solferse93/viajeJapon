@@ -16,14 +16,12 @@ async function fetchBudget() {
         if (error) throw error;
 
         setCache('budget_list', data);
-        updateLockUI();
         renderBudgetTable(data);
         renderBudgetChart(data);
     } catch (error) {
         console.warn('Budget database load failed. Fetching local backup...', error);
         const cached = getCache('budget_list');
         if (cached) {
-            updateLockUI();
             renderBudgetTable(cached);
             renderBudgetChart(cached);
 
@@ -243,6 +241,7 @@ function renderBudgetTable(data) {
 
     tbody.innerHTML = '';
     let total = 0;
+    const isAuthenticated = isUserAuthenticated();
 
     data.forEach(item => {
         total += parseFloat(item.monto);
@@ -259,6 +258,14 @@ function renderBudgetTable(data) {
         const assumers = item.asumido_por ? item.asumido_por.split(',') : ['Sergio', 'Natalia', 'Aitor', 'Esther'];
         const avatars = { 'Sergio': '🥷', 'Natalia': '🥋', 'Aitor': '🍣', 'Esther': '🌸' };
         const assumersBadges = assumers.map(name => `<span class="bg-gray-100 border border-gray-200/60 rounded px-1.5 py-0.5 text-[9px] font-bold text-gray-600 flex items-center gap-0.5">${avatars[name] || '👤'} ${name}</span>`).join('');
+
+        const disabledAttr = isAuthenticated ? '' : 'disabled style="opacity: 0.85; cursor: not-allowed;" title="Inicia sesión para cambiar el estado"';
+        
+        const deleteBtn = isAuthenticated ? `
+            <button onclick="deleteItem('${item.id}')" class="text-gray-300 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50" title="Eliminar">
+                🗑️
+            </button>
+        ` : '';
 
         tr.innerHTML = `
             <td class="px-6 py-4">
@@ -279,14 +286,12 @@ function renderBudgetTable(data) {
             <td class="px-3 py-4 flex items-center text-gray-600 text-xs tracking-wider"><span class="mr-2 text-base filter drop-shadow-sm">${icon}</span> ${item.categoria}</td>
             <td class="px-3 py-4 text-right font-bold text-gray-900">${parseFloat(item.monto).toFixed(2)} €</td>
             <td class="px-3 py-4 text-center">
-                <button onclick="togglePaid('${item.id}', ${!isPaid})" class="text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded-lg border ${paidClass} transition-colors cursor-pointer shadow-sm">
+                <button onclick="togglePaid('${item.id}', ${!isPaid})" ${disabledAttr} class="text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded-lg border ${paidClass} transition-colors cursor-pointer shadow-sm">
                         ${paidText}
                 </button>
             </td>
             <td class="px-3 py-4 text-center">
-                <button onclick="deleteItem('${item.id}')" class="text-gray-300 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50" title="Eliminar">
-                    🗑️
-                </button>
+                ${deleteBtn}
             </td>
         `;
         tbody.appendChild(tr);
@@ -305,9 +310,8 @@ function getCategoryIcon(category) {
 
 async function handleBudgetSubmit(e) {
     e.preventDefault();
-    const pin = sessionStorage.getItem('trip_pin');
-    if (!pin) {
-        alert("🔐 Caja fuerte bloqueada. Pulsa el icono del candado arriba a la derecha e introduce el PIN antes de operar.");
+    if (!isUserAuthenticated()) {
+        alert("🔐 Acceso denegado. Debes iniciar sesión para añadir gastos.");
         return;
     }
 
@@ -342,22 +346,24 @@ async function handleBudgetSubmit(e) {
     const assumedBy = assumedByArr.join(',');
 
     try {
-        const { error } = await supabaseClient.rpc('save_expense', {
-            pin_input: pin,
-            p_viaje_id: tripConfig.id,
-            p_nombre: name,
-            p_categoria: cat,
-            p_monto: parseFloat(amt),
-            p_pagado_por: paidBy,
-            p_asumido_por: assumedBy
-        });
+        const { error } = await supabaseClient
+            .from('presupuesto')
+            .insert({
+                viaje_id: tripConfig.id,
+                nombre: name,
+                categoria: cat,
+                monto: parseFloat(amt),
+                pagado_por: paidBy,
+                asumido_por: assumedBy,
+                pagado: false
+            });
 
         if (error) throw error;
 
         document.getElementById('budget-form').reset();
         await fetchBudget();
     } catch (error) {
-        alert('Acceso denegado: ' + error.message);
+        alert('Error al guardar gasto: ' + error.message);
     } finally {
         btn.innerHTML = originalText;
         btn.classList.remove('opacity-70');
@@ -366,46 +372,41 @@ async function handleBudgetSubmit(e) {
 }
 
 async function togglePaid(id, newStatus) {
-    const pin = sessionStorage.getItem('trip_pin');
-    if (!pin) {
-        alert("🔐 Caja fuerte bloqueada. Necesitas el PIN para modificar datos.");
+    if (!isUserAuthenticated()) {
+        alert("🔐 Acceso denegado. Debes iniciar sesión para modificar datos.");
         return;
     }
 
     try {
-        const { error } = await supabaseClient.rpc('toggle_expense_paid', {
-            pin_input: pin,
-            p_viaje_id: tripConfig.id,
-            p_id: id,
-            p_status: newStatus
-        });
+        const { error } = await supabaseClient
+            .from('presupuesto')
+            .update({ pagado: newStatus })
+            .eq('id', id);
 
         if (error) throw error;
         fetchBudget();
     } catch (error) {
-        alert('Acceso denegado: ' + error.message);
+        alert('Error al actualizar: ' + error.message);
     }
 }
 
 async function deleteItem(id) {
-    const pin = sessionStorage.getItem('trip_pin');
-    if (!pin) {
-        alert("🔐 Caja fuerte bloqueada. Necesitas el PIN para purgar datos.");
+    if (!isUserAuthenticated()) {
+        alert("🔐 Acceso denegado. Debes iniciar sesión para eliminar datos.");
         return;
     }
 
-    if (!confirm("¿Deseas purgar permanentemente este gasto de la base de datos central?")) return;
+    if (!confirm("¿Deseas eliminar permanentemente este gasto de la base de datos central?")) return;
     try {
-        const { error } = await supabaseClient.rpc('delete_expense', {
-            pin_input: pin,
-            p_viaje_id: tripConfig.id,
-            p_id: id
-        });
+        const { error } = await supabaseClient
+            .from('presupuesto')
+            .delete()
+            .eq('id', id);
 
         if (error) throw error;
         fetchBudget();
     } catch (error) {
-        alert('Acceso denegado: ' + error.message);
+        alert('Error al eliminar: ' + error.message);
     }
 }
 

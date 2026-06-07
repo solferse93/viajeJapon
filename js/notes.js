@@ -30,13 +30,20 @@ function updateNotesWarningUI() {
     const saveBtn = document.getElementById('detail-notes-save-btn');
     if (!saveBtn) return;
 
-    const pin = obtenerPin();
-    if (pin) {
+    const isAuthenticated = isUserAuthenticated();
+    if (isAuthenticated) {
         if (warning) warning.classList.add('hidden');
         saveBtn.className = "bg-japan-accent text-white font-bold text-xs px-4 py-2 rounded-xl shadow-sm hover:bg-red-800 transition-all transform active:scale-95 flex items-center";
         saveBtn.innerHTML = "<span>Guardar Nota en la Nube ☁️</span>";
     } else {
-        if (warning) warning.classList.remove('hidden');
+        if (warning) {
+            warning.classList.remove('hidden');
+            warning.innerHTML = `
+                <p class="text-xs text-amber-800 font-semibold flex items-center">
+                    <span class="mr-2 text-sm">🔒</span> Edición en caché local. Inicia sesión (botón superior 🔑) para sincronizar tus anotaciones en tiempo real.
+                </p>
+            `;
+        }
         saveBtn.className = "bg-amber-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-sm hover:bg-amber-600 transition-all transform active:scale-95 flex items-center";
         saveBtn.innerHTML = "<span>Guardar en Caché Local 💾</span>";
     }
@@ -52,14 +59,14 @@ async function saveCurrentDayNote() {
     const dayObj = itineraryData[index];
     const day = dayObj.day;
     const noteContent = document.getElementById('detail-notes-text').value;
-    const pin = obtenerPin();
+    const isAuthenticated = isUserAuthenticated();
 
     const saveBtn = document.getElementById('detail-notes-save-btn');
     const statusSpan = document.getElementById('detail-notes-status');
     if (!saveBtn || !statusSpan) return;
 
-    // GUARDADO EN CACHÉ LOCAL TEMPORAL SI NO HAY PIN
-    if (!pin) {
+    // GUARDADO EN CACHÉ LOCAL TEMPORAL SI NO ESTÁ AUTENTICADO
+    if (!isAuthenticated) {
         window.tripNotes[day] = noteContent;
         setCache('trip_notes', window.tripNotes);
 
@@ -81,12 +88,13 @@ async function saveCurrentDayNote() {
     statusSpan.textContent = 'Guardando en la nube...';
 
     try {
-        const { error } = await supabaseClient.rpc('guardar_nota', {
-            pin_input: pin,
-            p_viaje_id: tripConfig.id,
-            p_dia: day,
-            p_nota: noteContent
-        });
+        const { error } = await supabaseClient
+            .from('diario_viaje')
+            .upsert({
+                viaje_id: tripConfig.id,
+                dia: day,
+                nota: noteContent
+            }, { onConflict: 'viaje_id,dia' });
 
         if (error) throw error;
 
